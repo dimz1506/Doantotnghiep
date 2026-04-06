@@ -1,0 +1,23 @@
+﻿@using Doantotnghiep.Models.ViewModel
+@model LoginVM
+@{
+	ViewData["Title"] = "Đăng Nhap";
+}
+@if(User.Identity.IsAuthenticated)
+{
+	<span> Hello @User.Identity.Name</span>
+}
+<form asp-action="DangNhap" method="post">
+	<div>
+		<label>Ten tai khoan</label>
+		<input asp-for="TenDangNhap" />
+		<span asp-validation-for="TenDangNhap"></span>
+	</div>
+	<div>
+		<label>Mat khau</label>
+		<input asp-for="MatKhau" type="password" />
+		<span asp-validation-for="MatKhau"></span>
+	</div>
+	<button type="submit">Dang Nhap</button>
+</form>
+<div style="color:red">@ViewBag.Error</div>

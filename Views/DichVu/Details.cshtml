@@ -1,0 +1,68 @@
+﻿@model Doantotnghiep.Models.Entities.DichVu
+@{
+	ViewData["Title"] = "Chi tiết Dịch Vụ";
+}
+<div class="container mt-4" style="max-width: 700px;">
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<h2> Chi tiet dich vu</h2>
+		<a asp-action="Index" class="btn btn-secondary">Quay lai</a>
+	</div>
+	<div class="card">
+		<div class="card-body">
+			@if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+			{
+				<div class="row mb-3">
+					<div class="col-4 fw-bold">Id dich vu:</div>
+					<div class="col-8">@Model.IdDichVu</div>
+				</div>
+			}
+			<div class="row mb-3">
+				<div class="col-4 fw-bold">Ten dich vu:</div>
+				<div class="col-8">@Model.TenDichVu</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-4 fw-bold">Loai dich vu:</div>
+				<div class="col-8">@Model.LoaiDichVu.TenLoaiDichVu</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-4 fw-bold">Mo ta dich vu:</div>
+				<div class="col-8">@Model.MoTaDichVu</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-4 fw-bold">Gia dich vu:</div>
+				<div class="col-8">@Model.GiaDichVu</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-4 fw-bold">Thoi luong dich vu:</div>
+				<div class="col-8">@Model.ThoiLuongDV</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-4 fw-bold">Trang thai:</div>
+				<div class="col-8">@Model.TrangThaiDV</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-4 fw-bold">Hinh anh:</div>
+				<div class="col-8">
+					@if (!string.IsNullOrEmpty(Model.HinhAnhDichVu))
+					{
+						<img src="@Model.HinhAnhDichVu" alt="Hinh anh dich vu" style="max-width: 100%; border-radius: 8px;" />
+					}
+					else
+					{
+						<span>Khong co hinh anh</span>
+					}
+				</div>
+			</div>
+		</div>
+		@if (User.IsInRole("Admin") || User.IsInRole("NhanVien")){
+		<div class="card-footer d-flex gap-2">
+			<a asp-action="Edit" asp-route-id="@Model.IdDichVu" class="btn btn-warning"> Sua</a>
+			<form asp-action="Delete" asp-route-id="@Model.IdDichVu" method="post" class="d-inline"
+				  onsubmit="return confirm('Bạn có chắc muốn xóa dịch vụ này?')">
+				@Html.AntiForgeryToken()
+				<button type="submit" class="btn btn-danger">Xóa</button>
+			</form>
+		</div>
+		}
+	</div>
+</div>

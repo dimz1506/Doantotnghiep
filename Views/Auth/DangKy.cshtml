@@ -1,0 +1,45 @@
+﻿@using Doantotnghiep.Models.ViewModel
+@model RegisterCustomerVM
+@{
+	ViewData["Title"] = "Đăng ký";
+}
+<form asp-action="DangKy" method="post">
+	<div>
+		<label>Ten dang nhap</label>
+		<input asp-for="TenDangNhap" />
+		<span asp-validation-for="TenDangNhap"></span>
+	</div>
+	<div>
+		<label>Email</label>
+		<input asp-for="Email" />
+		<span asp-validation-for="Email"></span>
+	</div>
+	<div>
+		<label>Mat khau</label>
+		<input asp-for="MatKhau" type="password" />
+		<span asp-validation-for="MatKhau"></span>
+	</div>
+	<div>
+		<label>Nhap lai mat khau</label>
+		<input asp-for="XacNhanMatKhau" type="password" />
+		<span asp-validation-for="XacNhanMatKhau"></span>
+	</div>
+	<div>
+		<label>Ten Khach Hang</label>
+		<input asp-for="TenKhachHang" />
+		<span asp-validation-for="TenKhachHang"></span>
+	</div>
+	<div>
+		<label>So Dien Thoai</label>
+		<input asp-for="SoDienThoai" />
+		<span asp-validation-for="SoDienThoai"></span>
+	</div>
+	<div>
+		<label>Dia Chi Khach Hang</label>
+		<input asp-for="DiaChiKhachHang" />
+		<span asp-validation-for="DiaChiKhachHang"></span>
+	</div>
+	<button type="submit">Dang Ky</button>
+
+</form>
+<div style="color:red">@ViewBag.Error</div>

@@ -1,0 +1,89 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Doantotnghiep
+build_property.RootNamespace = Doantotnghiep
+build_property.ProjectDir = D:\Dự án ASP\Doantotnghiep\Doantotnghiep\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\Dự án ASP\Doantotnghiep\Doantotnghiep
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Admin/TaoNhanVien.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVGFvTmhhblZpZW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Auth/DangKy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxEYW5nS3kuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Auth/DangNhap.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxEYW5nTmhhcC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/DichVu/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGljaFZ1XENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/DichVu/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGljaFZ1XERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/DichVu/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGljaFZ1XEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/DichVu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGljaFZ1XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/LoaiDichVu/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9haURpY2hWdVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/LoaiDichVu/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9haURpY2hWdVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/LoaiDichVu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9haURpY2hWdVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-37hzi5ltsx

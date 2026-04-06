@@ -1,0 +1,76 @@
+﻿@model Doantotnghiep.Models.Entities.DichVu
+@{
+	ViewData["Title"] = "Sửa Dịch Vụ";
+}
+@if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+{
+<div class="container mt-4" style="max-width:600px;">
+	<h2>Sua dich vu</h2>
+	<a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+	<hr />
+	<form asp-action="Edit" method="post" enctype="multipart/form-data">
+		@Html.AntiForgeryToken()
+		<input type="hidden" asp-for="IdDichVu" />
+		<input type="hidden" asp-for="NgayTaoDichVu" />
+		<input type="hidden" asp-for="HinhAnhDichVu" />
+		<div class="mb-3">
+			<label asp-for="TenDichVu" class="form-label">Ten dich vu</label>
+			<input asp-for="TenDichVu" class="form-control" placeholder="Nhap ten dich vu:" />
+			<span asp-validation-for="TenDichVu" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="IdLoaiDichVu" class="form-label">Loai dich vu</label>
+			<select asp-for="IdLoaiDichVu" class="form-select" asp-items="@(ViewBag.LoaiDichVus as SelectList)">
+				<option value="">-- Chọn loại dịch vụ --</option>
+			</select>
+			<span asp-validation-for="IdLoaiDichVu" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="MoTaDichVu" class="form-label">Mo ta dich vu</label>
+			<textarea asp-for="MoTaDichVu" class="form-control" placeholder="Nhap mo ta dich vu:" rows="4"></textarea>
+			<span asp-validation-for="MoTaDichVu" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="GiaDichVu" class="form-label">Gia dich vu</label>
+			<input asp-for="GiaDichVu" class="form-control" placeholder="Nhap gia dich vu:" />
+			<span asp-validation-for="GiaDichVu" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="ThoiLuongDV" class="form-label">Thoi luong dich vu (phut)</label>
+			<input asp-for="ThoiLuongDV" class="form-control" placeholder="Nhap thoi luong dich vu:" />
+			<span asp-validation-for="ThoiLuongDV" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="TrangThaiDV" class="form-label">Trang Thai</label>
+			<select asp-for="TrangThaiDV" class="form-select">
+				<option value="">-- Chọn trạng thái --</option>
+				<option value="true">Hoạt động</option>
+				<option value="false">Không hoạt động</option>
+			</select>
+		</div>
+		<div class="row mb-3">
+				<label class="col-4 fw-bold">Hinh anh</label>
+				<input type="file" name="HinhAnhFile" class="form-control" accept="image/*" onchange="previewImage(this)" />
+				<div class="mt-2">
+					@if (!string.IsNullOrEmpty(Model.HinhAnhDichVu))
+					{
+						<img id="previewImg" src="@Model.HinhAnhDichVu" alt="Preview" style="max-width: 200px; border-radius: 8px;" />
+					}
+					else
+					{
+						<img id="previewImg" src="#" alt="Preview" style="max-width: 200px; display: none; border-radius: 8px;" />
+					}
+				</div>
+		</div>
+		<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+			<div class="card-footer d-flex gap-2">
+				<a asp-action="Edit" asp-route-id="@Model.IdDichVu" class="btn btn-warning">Sửa</a>
+				<form asp-action="Delete" asp-route-id="@Model.IdDichVu" method="post" class="d-inline"
+					  onsubmit="return confirm('Bạn có chắc muốn xóa dịch vụ này?')">
+					@Html.AntiForgeryToken()
+					<button type="submit" class="btn btn-danger">Xóa</button>
+				</form>
+			</div>
+	</form>
+</div>
+}

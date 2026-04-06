@@ -1,0 +1,34 @@
+﻿@model Doantotnghiep.Models.Entities.LoaiDichVu
+@{
+	ViewData["Title"] = "Tạo Loại Dịch Vụ";
+}
+<div class="container mt-4" style="max-width: 600px;">
+	<h2> Them loai dich vu</h2>
+	<hr/>
+	<form asp-action="Create" method="post">
+		@Html.AntiForgeryToken()
+		<div class="mb-3">
+			<label asp-for="TenLoaiDichVu" class="form-label">Ten loai dich vu</label>
+			<input asp-for="TenLoaiDichVu" class="form-control" placeholder="Nhap ten loai dich vu:" />
+			<span asp-validation-for="TenLoaiDichVu" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="MoTaLoaiDichVu" class="form-label">Mo ta loai dich vu</label>
+			<textarea asp-for="MoTaLoaiDichVu" class="form-control" placeholder="Nhap mo ta loai dich vu:" rows="4"></textarea>
+			<span asp-validation-for="MoTaLoaiDichVu" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="TrangThaiLoaiDV" class="form-label">Trang Thai</label>
+			<select asp-for="TrangThaiLoaiDV" class="form-select">
+				<option value="">-- Chọn trạng thái --</option>
+				<option value="true">Hoạt động</option>
+				<option value="false">Không hoạt động</option>
+			</select>
+		</div>
+		<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+		<div class="d-flex gap-2">
+			<button type="submit" class="btn btn-primary">Luu</button>
+			<a asp-action="Index" class="btn btn-secondary">Hủy</a>
+		</div>
+	</form>
+</div>
