@@ -1,0 +1,64 @@
+﻿@using Doantotnghiep.Models.ViewModel
+@model CreateNhanVienVM
+@{
+	ViewData["Title"] = "Tạo Nhân Viên";
+}
+@if (User.IsInRole("Admin"))
+{
+	<a href="/Admin/TaoNhanVien">Tạo Nhân Viên</a>
+
+}
+@if (TempData["SuccessMessage"] != null)
+{
+	<div style="color:green">@TempData["SuccessMessage"]</div>
+}
+<div asp-validation-summary="All" style="collor:red"></div>
+<form asp-action="TaoNhanVien" method="post">
+	<div>
+		<label>Ten dang nhap</label>
+		<input asp-for="TenDangNhap" />
+		<span asp-validation-for="TenDangNhap"></span>
+	</div>
+	<div>
+		<label>Email</label>
+		<input asp-for="Email" />
+		<span asp-validation-for="Email"></span>
+	</div>
+	<div>
+		<label>Mat khau</label>
+		<input asp-for="MatKhau" type="password" />
+		<span asp-validation-for="MatKhau"></span>
+	</div>
+	<div>
+		<label>Nhap lai mat khau</label>
+		<input asp-for="XacNhanMatKhau" type="password" />
+		<span asp-validation-for="XacNhanMatKhau"></span>
+	</div>
+
+	<div>
+		<label>Ten Nhan Vien</label>
+		<input asp-for="TenNhanVien" />
+		<span asp-validation-for="TenNhanVien"></span>
+	</div>
+	<div>
+		<label>So Dien Thoai</label>
+		<input asp-for="SoDienThoai" />
+		<span asp-validation-for="SoDienThoai"></span>
+	</div>
+	<div>
+		<label>Dia Chi Nhan Vien</label>
+		<input asp-for="DiaChiNhanVien" />
+		<span asp-validation-for="DiaChiNhanVien"></span>
+	</div>
+	<div>
+		<label>Chuyen Mon Nhan Vien</label>
+		<input asp-for="ChuyenMonNV" />
+		<span asp-validation-for="ChuyenMonNV"></span>
+	</div>
+	<button type="submit">Tao Nhan Vien</button>
+</form>
+@section Scripts{
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
