@@ -1,0 +1,48 @@
+﻿@model Doantotnghiep.Models.Entities.NhanVien
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Chi tiết thông tin nhân viên";
+	bool isAdmin = User.IsInRole("Admin");
+}
+
+<div class="container mt-4">
+    <h2>Chi tiết thông tin nhân viên</h2>
+
+    <div class="card">
+        <div class="card-body">
+
+            <p><strong>ID:</strong> @Model.IdNhanVien</p>
+
+            <p><strong>Tên nhân viên:</strong> @Model.TenNhanVien</p>
+
+            <p><strong>Địa chỉ:</strong> @Model.DiaChiNV</p>
+
+            <p><strong>Chuyên môn:</strong> @Model.ChuyenMonNV</p>
+
+            <p><strong>Ngày tạo:</strong> @Model.NgayTaoNV.ToString("dd/MM/yyyy HH:mm")</p>
+
+            <p>
+                <strong>Trạng thái:</strong>
+                @if (Model.TrangThaiNV == TrangThaiNhanVien.DangLamViec)
+                {
+                    <span class="badge bg-success">Đang làm việc</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Đã nghỉ việc</span>
+                }
+            </p>
+			@if (User.IsInRole("Admin")){
+            <p><strong>Tài khoản:</strong> @Model.TaiKhoan?.TenTaiKhoan</p>
+            }
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model.IdNhanVien" class="btn btn-primary">
+            Sửa
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>

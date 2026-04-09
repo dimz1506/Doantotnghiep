@@ -1,0 +1,66 @@
+﻿@model Doantotnghiep.Models.Entities.NhanVien
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Sửa thông tin nhân viên";
+}
+@if (User.IsInRole("Admin") || (User.IsInRole("NhanVien") && User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name == Model.TaiKhoan?.TenTaiKhoan))
+{
+<div class="container mt-4">
+    <h2>Sửa thông tin nhân viên</h2>
+
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="IdNhanVien" />
+        <input type="hidden" asp-for="IdTaiKhoan" />
+        <input type="hidden" asp-for="NgayTaoNV" />
+
+        <div class="mb-3">
+            <label class="form-label">Tên nhân viên</label>
+            <input asp-for="TenNhanVien" class="form-control" />
+            <span asp-validation-for="TenNhanVien" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Địa chỉ</label>
+            <input asp-for="DiaChiNV" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Chuyên môn</label>
+            <input asp-for="ChuyenMonNV" class="form-control" />
+            <span asp-validation-for="ChuyenMonNV" class="text-danger"></span>
+        </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="mb-3">
+                <label class="form-label">Trạng thái</label>
+                <select asp-for="TrangThaiNV" class="form-select"
+                asp-items="Html.GetEnumSelectList<TrangThaiNhanVien>()">
+                </select>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label class="form-label">Ngày tạo</label>
+            <input asp-for="NgayTaoNV" class="form-control" readonly />
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Tài khoản</label>
+            <input value="@Model.TaiKhoan?.TenTaiKhoan" class="form-control" readonly />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
+}
+else
+{
+<div class="container mt-4">
+	<div class="alert alert-danger">Bạn không có quyền truy cập trang này.</div>
+	<a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>
+}

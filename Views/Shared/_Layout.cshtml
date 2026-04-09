@@ -28,6 +28,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="DichVu" asp-action="Index">Dich Vu</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="KhachHang" asp-action="Index">Khach Hang</a>
+                        </li>
 						@if (User.Identity == null || !User.Identity.IsAuthenticated){
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="DangKy">Dang Ky</a>
@@ -40,13 +43,18 @@
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="TaoNhanVien">Tao Nhan Vien</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="NhanVien" asp-action="Index">Nhan Vien</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="LoaiDichVu" asp-action="Index">Loai Dich Vu</a>
                             </li>
-                           
                         }
+						@if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("NhanVien"))
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="NhanVien" asp-action="Index">Thong Tin Ca Nhan</a>
+							</li>
+						}
                     </ul>
                     <ul class="navbar-nav">
 						@if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -59,6 +67,7 @@
 									<button type="submit" class="btn btn-link nav-link text-dark">Dang Xuat</button>
                                 </form>
                             </li>
+                           
 						}
                     </ul>
                 </div>

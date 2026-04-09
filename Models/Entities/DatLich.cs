@@ -34,8 +34,8 @@ namespace Doantotnghiep.Models.Entities
         public DateTime NgayTaoDatLich { get; set; } = DateTime.Now;
         [Required]
         public DateTime? NgayCapNhatDatLich { get; set; } 
-        public ICollection<HoaDon> HoaDons { get; set; } 
-        public ICollection<ChiTietDatLich> ChiTietDatLichs { get; set; }
+        public ICollection<HoaDon?> HoaDons { get; set; } 
+        public ICollection<ChiTietDatLich?> ChiTietDatLichs { get; set; }
 
     }
 }
