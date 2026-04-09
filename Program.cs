@@ -36,6 +36,11 @@ builder.Services.AddScoped<ILoaiDichVuRepository, LoaiDichVuRepository>();
 builder.Services.AddScoped<ILoaiDichVuServices, LoaiDichVuServices>();
 builder.Services.AddScoped<IDichVuRepository, DichVuRepository>();
 builder.Services.AddScoped<IDichVuServices, DichVuServices>();
+builder.Services.AddScoped<INhanVienRepository, NhanVienRepository>();
+builder.Services.AddScoped<INhanVienServices, NhanVienServices>();
+builder.Services.AddScoped<IKhachHangRepository, KhachHangRepository>();
+builder.Services.AddScoped<IKhachHangServices, KhachHangServices>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

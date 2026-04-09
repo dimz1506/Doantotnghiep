@@ -1,34 +1,30 @@
 ﻿using Doantotnghiep.Models.Entities;
-using Doantotnghiep.Models.Enum;
+using Doantotnghiep.Models.ViewModel;
+using Doantotnghiep.Services.Implementations;
 using Doantotnghiep.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Doantotnghiep.Controllers
 {
-   
-    public class NhanVienController : Controller
+    public class KhachHangController : Controller
     {
-        private readonly INhanVienServices _nhanVienServices;
-        public NhanVienController(INhanVienServices nhanVienServices)
+        private readonly IKhachHangServices _khachHangServices;
+        public KhachHangController(IKhachHangServices khachHangServices)
         {
-            _nhanVienServices = nhanVienServices;
+            _khachHangServices = khachHangServices;
         }
         [HttpGet]
-        [Authorize(Roles = "Admin,NhanVien")]
         public async Task<IActionResult> Index(string? searchString)
         {
-            List<NhanVien> nhanViens;
-            if(User.IsInRole("Admin"))
+            List<KhachHang> khachHangs;
+            if (User.IsInRole("Admin"))
             {
-                nhanViens = await _nhanVienServices.GetAllNhanVienAsync();
-                if(!string.IsNullOrEmpty(searchString))
+                khachHangs = await _khachHangServices.GetAllKhachHangAsync();
+                if (!string.IsNullOrEmpty(searchString))
                 {
                     searchString = searchString.ToLower();
-                    nhanViens = nhanViens.Where(nv => nv.TenNhanVien.ToLower().Contains(searchString) || nv.ChuyenMonNV.ToLower().Contains(searchString)).ToList();
+                    khachHangs = khachHangs.Where(nv => nv.TenKhachHang.ToLower().Contains(searchString)).ToList();
                 }
             }
             else
@@ -38,116 +34,112 @@ namespace Doantotnghiep.Controllers
                 {
                     return Unauthorized();
                 }
-                var nhanvien = await _nhanVienServices.GetNhanVienByTaiKhoanIdAsync(idTaiKhoan);
-                if (nhanvien == null)
+                var khachHang = await _khachHangServices.GetKhachHangByTaiKhoanIdAsync(idTaiKhoan);
+                if (khachHang == null)
                 {
                     return NotFound();
                 }
-                nhanViens = new List<NhanVien> { nhanvien };
+                khachHangs = new List<KhachHang> { khachHang };
             }
             ViewData["CurrentFilter"] = searchString;
-            return View(nhanViens);
+            return View(khachHangs);
         }
         [HttpGet]
-        [Authorize(Roles = "Admin,NhanVien")]
         public async Task<IActionResult> Details(int id)
         {
-            var nhanvien = await _nhanVienServices.GetNhanVienByIdAsync(id);
-            if (nhanvien == null)
+            var khachHang = await _khachHangServices.GetKhachHangByIdAsync(id);
+            if (khachHang == null)
             {
                 return NotFound();
             }
-            if(User.IsInRole("NhanVien"))
+            if (User.IsInRole("KhachHang"))
             {
                 var idTaiKhoanClaim = User.FindFirst("IdTaiKhoan")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(idTaiKhoanClaim) || !int.TryParse(idTaiKhoanClaim, out int idTaiKhoan))
                 {
                     return Unauthorized();
                 }
-                if (nhanvien.IdTaiKhoan != idTaiKhoan)
+                if (khachHang.IdTaiKhoan != idTaiKhoan)
                 {
                     return Forbid();
                 }
             }
-            return View(nhanvien);
+            return View(khachHang);
         }
-     
         [HttpGet]
-
-        [Authorize(Roles ="Admin,NhanVien")]
         public async Task<IActionResult> Edit(int id)
         {
-            var nhanvien = await _nhanVienServices.GetNhanVienByIdAsync(id);
-            if (nhanvien == null)
+            var khachhang = await _khachHangServices.GetKhachHangByIdAsync(id);
+            if (khachhang == null)
             {
                 return NotFound();
             }
-            if(User.IsInRole("NhanVien"))
+            if (User.IsInRole("KhachHang"))
             {
                 var idTaiKhoanClaim = User.FindFirst("IdTaiKhoan")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(idTaiKhoanClaim) || !int.TryParse(idTaiKhoanClaim, out int idTaiKhoan))
                 {
                     return Unauthorized();
                 }
-                if (nhanvien.IdTaiKhoan != idTaiKhoan)
+                if (khachhang.IdTaiKhoan != idTaiKhoan)
                 {
                     return Forbid();
                 }
             }
-            return View(nhanvien);
+            //map entity -> viewmodel
+            var vm = new EditKhachHangViewModel
+            {
+                IdKhachHang = khachhang.IdKhachHang,
+                TenKhachHang = khachhang.TenKhachHang,
+                DiaChiKhachHang = khachhang.DiaChiKhachHang,
+                GhiChuKH = khachhang.GhiChuKH,
+                NgayTaoKH = khachhang.NgayTaoKH
+            };
+            return View(vm);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,NhanVien")]
-
-        public async Task<IActionResult> Edit(NhanVien nhanVien)
+        public async Task<IActionResult> Edit(int id, EditKhachHangViewModel khachHang)
         {
-            var nhanvien1 = await _nhanVienServices.GetNhanVienByIdAsync(nhanVien.IdNhanVien);
-            if (nhanvien1 == null)
+            var khachhang1 = await _khachHangServices.GetKhachHangByIdAsync(khachHang.IdKhachHang);
+            if (khachhang1 == null)
             {
                 return NotFound();
             }
-            if (User.IsInRole("NhanVien"))
+            if (User.IsInRole("KhachHang"))
             {
                 var idTaiKhoanClaim = User.FindFirst("IdTaiKhoan")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(idTaiKhoanClaim) || !int.TryParse(idTaiKhoanClaim, out int idTaiKhoan))
                 {
                     return Unauthorized();
                 }
-                if (nhanvien1.IdTaiKhoan != idTaiKhoan)
+                if (khachhang1.IdTaiKhoan != idTaiKhoan)
                 {
                     return Forbid();
                 }
             }
             if (!ModelState.IsValid)
             {
-                return View(nhanVien);
+                return View(khachHang);
             }
-            var result = await _nhanVienServices.UpdateNhanVienAsync(nhanVien);
+            //map viewmodel -> entity
+            var khachHangToUpdate = new KhachHang
+            {
+                IdKhachHang = khachHang.IdKhachHang,
+                TenKhachHang = khachHang.TenKhachHang,
+                DiaChiKhachHang = khachHang.DiaChiKhachHang,
+                GhiChuKH = khachHang.GhiChuKH,
+                NgayTaoKH = khachHang.NgayTaoKH
+            };
+            var result = await _khachHangServices.UpdateKhachHangAsync(khachHangToUpdate);
             if (!result.ok)
             {
                 TempData["ErrorMessage"] = result.error;
                 return RedirectToAction("Index");
             }
-            TempData["SuccessMessage"] = "Cập nhật nhân viên thành công!";
+            TempData["SuccessMessage"] = "Cập nhật khach hang thành công!";
             return RedirectToAction("Index");
-
         }
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Search(string? chuyenMon, TrangThaiNhanVien? trangThai)
-        {
-            var nhanviens = await _nhanVienServices.GetAllNhanVienAsync();
-            if(!string.IsNullOrEmpty(chuyenMon))
-            {
-                nhanviens = nhanviens.Where(nv => nv.ChuyenMonNV.Contains(chuyenMon)).ToList();
-            }
-            if (trangThai.HasValue)
-            {
-                nhanviens = nhanviens.Where(nv => nv.TrangThaiNV == (trangThai.Value == TrangThaiNhanVien.DangLamViec ? Models.Enum.TrangThaiNhanVien.DangLamViec : Models.Enum.TrangThaiNhanVien.NghiViec)).ToList();
-            }
-            return View("Index", nhanviens);
+        
         }
-       
-    }
 }

@@ -1,0 +1,38 @@
+﻿@model Doantotnghiep.Models.Entities.KhachHang
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Chi tiết thông tin khach hang";
+   
+}
+
+<div class="container mt-4">
+    <h2>Chi tiết thông tin khach hang</h2>
+
+    <div class="card">
+        <div class="card-body">
+
+            <p><strong>ID:</strong> @Model.IdKhachHang</p>
+
+            <p><strong>Tên nhân viên:</strong> @Model.TenKhachHang</p>
+
+            <p><strong>Địa chỉ:</strong> @Model.DiaChiKhachHang</p>
+
+            <p><strong>Ghi Chu:</strong> @Model.GhiChuKH</p>
+
+            <p><strong>Ngày tạo:</strong> @Model.NgayTaoKH.ToString("dd/MM/yyyy HH:mm")</p>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <p><strong>Tài khoản:</strong> @Model.TaiKhoan?.TenTaiKhoan</p>
+            }
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model.IdKhachHang" class="btn btn-primary">
+            Sửa
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>

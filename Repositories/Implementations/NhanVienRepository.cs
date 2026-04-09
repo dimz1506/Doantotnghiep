@@ -1,5 +1,6 @@
 ﻿using Doantotnghiep.Data;
 using Doantotnghiep.Models.Entities;
+using Doantotnghiep.Models.Enum;
 using Doantotnghiep.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,60 +14,38 @@ namespace Doantotnghiep.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<(bool ok, string error)> CreateNhanVienAsync(NhanVien nhanVien)
-        {
-            _context.NhanViens.Add(nhanVien);
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
-            {
-                return (true, "Them nhan vien thanh cong!");
-            }
-            return (false, "Thêm nhân viên thất bại");
-        }
-
-        public async Task<(bool ok, string error)> DeleteNhanVienAsync(int id)
-        {
-            var nhanvien = await _context.NhanViens.FindAsync(id);
-            if (nhanvien == null)
-            {
-                return (false, "Khong tim thay nhan vien.");
-            }
-            _context.NhanViens.Remove(nhanvien);
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
-            {
-                return (true, "Xoa nhan vien thanh cong!");
-            }
-            return (false, "Xóa nhân viên thất bại");
-        }
-
         public async Task<List<NhanVien>> GetAllNhanVienAsync()
         {
-            return await _context.NhanViens.ToListAsync();
+            return await _context.NhanViens.Include(nv => nv.TaiKhoan).ToListAsync();
         }
 
         public async Task<List<NhanVien>> GetNhanVienByChuyenMonAsync(string? chuyenMon)
         {
-            return await _context.NhanViens.Where(nv => nv.ChuyenMonNV.Contains(chuyenMon)).ToListAsync();
+            if(string.IsNullOrEmpty(chuyenMon))
+            {
+                return new List<NhanVien>();
+            }
+            return await _context.NhanViens.Include(nv => nv.TaiKhoan).Where(nv => nv.ChuyenMonNV.Contains(chuyenMon)).ToListAsync();
 
         }
 
-        public async Task<NhanVien> GetNhanVienByIdAsync(int id)
+        public async Task<NhanVien?> GetNhanVienByIdAsync(int id)
         {
-            return await _context.NhanViens.FindAsync(id);
+            return await _context.NhanViens.Include(nv => nv.TaiKhoan).FirstOrDefaultAsync(nv => nv.IdNhanVien == id);
         }
 
-        public async Task<List<NhanVien>> GetNhanVienByTrangThaiAsync(bool trangThai)
+        public async Task<NhanVien?> GetNhanVienByTaiKhoanIdAsync(int taiKhoanId)
         {
-            return await _context.NhanViens.Where(nv => nv.TrangThaiNV == (trangThai ? Models.Enum.TrangThaiNhanVien.DangLamViec : Models.Enum.TrangThaiNhanVien.NghiViec)).ToListAsync();
+            return await _context.NhanViens.Include(nv => nv.TaiKhoan).FirstOrDefaultAsync(nv => nv.IdTaiKhoan == taiKhoanId);
+
         }
 
-        public async Task<int> SaveChangeAsync()
+        public async Task<List<NhanVien>> GetNhanVienByTrangThaiAsync(TrangThaiNhanVien trangThai)
         {
-            var result = await _context.SaveChangesAsync();
-            return result;
+            return await _context.NhanViens.Include(nv => nv.TaiKhoan).Where(nv => nv.TrangThaiNV == trangThai).ToListAsync();
         }
 
+        
         public async Task<(bool ok, string error)> UpdateNhanVienAsync(NhanVien nhanVien)
         {
             _context.NhanViens.Update(nhanVien);

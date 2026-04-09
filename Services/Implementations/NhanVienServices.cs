@@ -1,4 +1,5 @@
 ﻿using Doantotnghiep.Models.Entities;
+using Doantotnghiep.Models.Enum;
 using Doantotnghiep.Repositories.Interface;
 using Doantotnghiep.Services.Interfaces;
 
@@ -10,34 +11,6 @@ namespace Doantotnghiep.Services.Implementations
         public NhanVienServices(INhanVienRepository nhanVienRepository)
         {
             _nhanVienRepository = nhanVienRepository;
-        }
-
-        public async Task<(bool ok, string error)> CreateNhanVienAsync(NhanVien nhanVien)
-        {
-            //kiem tra null
-            if (string.IsNullOrEmpty(nhanVien.TenNhanVien))
-            {
-                return (false, " Ten nhan vien khong duoc de trong.");
-            }
-            //
-            var nhanvien1 = await _nhanVienRepository.CreateNhanVienAsync(nhanVien);
-            return nhanvien1;
-        }
-
-        public async Task<(bool ok, string error)> DeleteNhanVienAsync(int id)
-        {
-            //kiem tra id nhan vien co ton tai khong
-            var nhanvien = await _nhanVienRepository.GetNhanVienByIdAsync(id);
-            if (nhanvien == null)
-            {
-                return (false, "Khong tim thay nhan vien.");
-            }
-            var nhanvien1 = await _nhanVienRepository.DeleteNhanVienAsync(id);
-            if (!nhanvien1.ok)
-            {
-                return (false, "Xoa khong thanh cong.");
-            }
-            return (true, "Xoa nhan vien thanh cong.");
         }
 
         public async Task<List<NhanVien>> GetAllNhanVienAsync()
@@ -57,7 +30,7 @@ namespace Doantotnghiep.Services.Implementations
             return chuyenmon;
         }
 
-        public async Task<NhanVien> GetNhanVienByIdAsync(int id)
+        public async Task<NhanVien?> GetNhanVienByIdAsync(int id)
         {
             //kiem tra id nhan vien co ton tai khong
             var nhanvien = await _nhanVienRepository.GetNhanVienByIdAsync(id);
@@ -68,40 +41,57 @@ namespace Doantotnghiep.Services.Implementations
             return nhanvien;
         }
 
-        public async Task<List<NhanVien>> GetNhanVienByTrangThaiAsync(bool trangThai)
+        public async Task<NhanVien?> GetNhanVienByTaiKhoanIdAsync(int taiKhoanId)
+        {
+            var nhanvien = await _nhanVienRepository.GetNhanVienByTaiKhoanIdAsync(taiKhoanId);
+            if (nhanvien == null)
+            {
+                return null;
+            }
+            return nhanvien;
+        }
+
+        public async Task<List<NhanVien>> GetNhanVienByTrangThaiAsync(TrangThaiNhanVien trangThai)
         {
             //kiem tra null
-            var trangthai = await _nhanVienRepository.GetNhanVienByTrangThaiAsync(trangThai);
-            if (trangthai == null || trangthai.Count == 0)
+            var nhanvien = await _nhanVienRepository.GetNhanVienByTrangThaiAsync(trangThai);
+            if (nhanvien == null)
             {
                 return new List<NhanVien>();
             }
-            return trangthai;
+            return nhanvien;
         }
 
-        public async Task<int> SaveChangeAsync()
-        {
-            return await _nhanVienRepository.SaveChangeAsync();
-        }
-
+     
         public async Task<(bool ok, string error)> UpdateNhanVienAsync(NhanVien nhanVien)
         {
-            //kiem tra id nhan vien co ton tai khong
-            var nhanvien = await _nhanVienRepository.GetNhanVienByIdAsync(nhanVien.IdNhanVien);
-            if (nhanvien == null)
+             if (nhanVien.IdNhanVien <= 0)
             {
-                return (false, "Khong tim thay nhan vien.");
+                return (false, "ID nhân viên không hợp lệ.");
             }
-            if(string.IsNullOrEmpty(nhanVien.TenNhanVien))
+
+            if (string.IsNullOrWhiteSpace(nhanVien.TenNhanVien))
             {
-                return (false, " Ten nhan vien khong duoc de trong.");
+                return (false, "Tên nhân viên không được để trống.");
             }
-            var nhanvien1 = await _nhanVienRepository.UpdateNhanVienAsync(nhanVien);
-            if (!nhanvien1.ok)
+
+            if (string.IsNullOrWhiteSpace(nhanVien.ChuyenMonNV))
             {
-                return (false, "Cap nhat khong thanh cong.");
+                return (false, "Chuyên môn không được để trống.");
             }
-            return (true, "Cap nhat nhan vien thanh cong.");
+
+            var nhanVienDb = await _nhanVienRepository.GetNhanVienByIdAsync(nhanVien.IdNhanVien);
+            if (nhanVienDb == null)
+            {
+                return (false, "Không tìm thấy nhân viên.");
+            }
+
+            nhanVienDb.TenNhanVien = nhanVien.TenNhanVien;
+            nhanVienDb.DiaChiNV = nhanVien.DiaChiNV;
+            nhanVienDb.ChuyenMonNV = nhanVien.ChuyenMonNV;
+            nhanVienDb.TrangThaiNV = nhanVien.TrangThaiNV;
+
+            return await _nhanVienRepository.UpdateNhanVienAsync(nhanVienDb);
         }
     }
 }
