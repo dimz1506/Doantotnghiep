@@ -56,6 +56,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/KhachHang/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2hhY2hIYW5nXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/KhachHang/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2hhY2hIYW5nXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/KhachHang/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2hhY2hIYW5nXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/LoaiDichVu/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9haURpY2hWdVxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -66,6 +78,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/LoaiDichVu/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9haURpY2hWdVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/NhanVien/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhblZpZW5cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/NhanVien/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhblZpZW5cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/NhanVien/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhblZpZW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Dự án ASP/Doantotnghiep/Doantotnghiep/Views/Shared/Error.cshtml]

@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Doantotnghiep.Models.Entities.NhanVien>
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Quản lý nhân viên";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Danh sách nhân viên</h2>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Admin" asp-action="TaoNhanVien" class="btn btn-success">Them moi nhan vien</a>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <form method="get" class="mb-3">
+        <div class="input-group" style="max-width: 400px;">
+            <input type="text" name="searchString" class="form-control"
+                   placeholder="Tìm kiếm nhân viên..."
+                   value="@ViewData["CurrentFilter"]" />
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+
+            @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"] as string))
+            {
+                <a asp-action="Index" class="btn btn-secondary">Xóa bộ lọc</a>
+            }
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Tên nhân viên</th>
+                <th>Địa chỉ</th>
+                <th>Chuyên môn</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Tài khoản</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Không có nhân viên nào</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdNhanVien</td>
+                        <td>@item.TenNhanVien</td>
+                        <td>@item.DiaChiNV</td>
+                        <td>@item.ChuyenMonNV</td>
+                        <td>@item.NgayTaoNV.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            @if (item.TrangThaiNV == TrangThaiNhanVien.DangLamViec)
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Không hoạt động</span>
+                            }
+                        </td>
+						@if (User.IsInRole("Admin")){
+                            <td>@item.TaiKhoan?.TenTaiKhoan</td>
+                        }
+                        <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.IdNhanVien" class="btn btn-sm btn-primary">Sửa</a>
+                                <a asp-action="Details" asp-route-id="@item.IdNhanVien" class="btn btn-sm btn-info">Chi tiết</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

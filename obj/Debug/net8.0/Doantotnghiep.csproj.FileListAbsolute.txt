@@ -146,3 +146,5 @@ D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\Doantotnghiep.genru
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\ref\Doantotnghiep.dll
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\bin\Debug\net8.0\Konscious.Security.Cryptography.Argon2.dll
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\bin\Debug\net8.0\Konscious.Security.Cryptography.Blake2.dll
+D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\Doantotnghiep.sourcelink.json
+D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
