@@ -1,77 +1,190 @@
 ﻿@model Doantotnghiep.Models.Entities.DichVu
+
 @{
-	ViewData["Title"] = "Tạo Dịch Vụ";
+    ViewData["Title"] = "Tạo dịch vụ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="container mt-4" style="max-width: 600px;">
-	<h2> Them dich vu</h2>
-	<hr/>
-	<form asp-action="Create" method="post" enctype="multipart/form-data">
-		@Html.AntiForgeryToken()
-		<div class="mb-3">
-			<label asp-for="TenDichVu" class="form-label">Ten dich vu</label>
-			<input asp-for="TenDichVu" class="form-control" placeholder="Nhap ten dich vu:" />
-			<span asp-validation-for="TenDichVu" class="text-danger"></span>
-		</div>
-		<div class="mb-3">
-			<label asp-for="IdLoaiDichVu" class="form-label">Loai dich vu</label>
-			<select asp-for="IdLoaiDichVu" class="form-select" asp-items="@(ViewBag.LoaiDichVus as SelectList)">
-				<option value="">-- Chọn loại dịch vụ --</option>
-			</select>
-			<span asp-validation-for="IdLoaiDichVu" class="text-danger"></span>
-		</div>
-		<div class="mb-3">
-			<label asp-for="MoTaDichVu" class="form-label">Mo ta dich vu</label>
-			<textarea asp-for="MoTaDichVu" class="form-control" placeholder="Nhap mo ta dich vu:" rows="4"></textarea>
-			<span asp-validation-for="MoTaDichVu" class="text-danger"></span>
-		</div>
-		<div class="mb-3">
-			<label asp-for="GiaDichVu" class="form-label">Gia dich vu</label>
-			<input asp-for="GiaDichVu" class="form-control" placeholder="Nhap gia dich vu:" />
-			<span asp-validation-for="GiaDichVu" class="text-danger"></span>
-		</div>
-		<div class="mb-3">
-			<label asp-for="ThoiLuongDV" class="form-label">Thoi luong dich vu (phut)</label>
-			<input asp-for="ThoiLuongDV" class="form-control" placeholder="Nhap thoi luong dich vu:" />
-			<span asp-validation-for="ThoiLuongDV" class="text-danger"></span>
-		</div>
-		<div class="mb-3">
-			<label asp-for="TrangThaiDV" class="form-label">Trang Thai</label>
-			<select asp-for="TrangThaiDV" class="form-select">
-				<option value="">-- Chọn trạng thái --</option>
-				<option value="true">Hoạt động</option>
-				<option value="false">Không hoạt động</option>
-			</select>
-		</div>
-		<div class="mb-3">
-			<label class="form-label">Hinh anh <span class="text-danger">*</span></label>
-			<input type="file" name="HinhAnhFile" class="form-control" accept="image/*" onchange="previewImage(this)" />
-			<div class="mt-2">
-				<img id="previewImg" src="#" alt="Preview" style="max-width: 200px; display: none; border-radius: 8px;" />
-			</div>
-		</div>
-		
-		<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-		<div class="d-flex gap-2">
-			<button type="submit" class="btn btn-primary">Luu</button>
-			<a asp-action="Index" class="btn btn-secondary">Hủy</a>
-		</div>
-	</form>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">Tạo dịch vụ mới</h2>
+                <p class="text-muted mb-0">
+                    Thêm dịch vụ vào hệ thống để khách hàng có thể đặt lịch.
+                </p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin dịch vụ</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="TenDichVu" class="form-label fw-semibold">
+                                Tên dịch vụ
+                            </label>
+
+                            <input asp-for="TenDichVu"
+                                   class="form-control"
+                                   placeholder="Nhập tên dịch vụ" />
+
+                            <span asp-validation-for="TenDichVu" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="IdLoaiDichVu" class="form-label fw-semibold">
+                                Loại dịch vụ
+                            </label>
+
+                            <select asp-for="IdLoaiDichVu"
+                                    class="form-select"
+                                    asp-items="@(ViewBag.LoaiDichVus as SelectList)">
+                                <option value="">-- Chọn loại dịch vụ --</option>
+                            </select>
+
+                            <span asp-validation-for="IdLoaiDichVu" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MoTaDichVu" class="form-label fw-semibold">
+                                Mô tả dịch vụ
+                            </label>
+
+                            <textarea asp-for="MoTaDichVu"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Nhập mô tả dịch vụ"></textarea>
+
+                            <span asp-validation-for="MoTaDichVu" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GiaDichVu" class="form-label fw-semibold">
+                                    Giá dịch vụ
+                                </label>
+
+                                <input asp-for="GiaDichVu"
+                                       type="number"
+                                       min="0"
+                                       class="form-control"
+                                       placeholder="Nhập giá dịch vụ" />
+
+                                <span asp-validation-for="GiaDichVu" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ThoiLuongDV" class="form-label fw-semibold">
+                                    Thời lượng dịch vụ
+                                </label>
+
+                                <div class="input-group">
+                                    <input asp-for="ThoiLuongDV"
+                                           type="number"
+                                           min="1"
+                                           class="form-control"
+                                           placeholder="Nhập thời lượng" />
+
+                                    <span class="input-group-text">phút</span>
+                                </div>
+
+                                <span asp-validation-for="ThoiLuongDV" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TrangThaiDV" class="form-label fw-semibold">
+                                Trạng thái
+                            </label>
+
+                            <select asp-for="TrangThaiDV" class="form-select">
+                                <option value="">-- Chọn trạng thái --</option>
+                                <option value="true">Hoạt động</option>
+                                <option value="false">Không hoạt động</option>
+                            </select>
+
+                            <span asp-validation-for="TrangThaiDV" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Hình ảnh dịch vụ <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="file"
+                                   name="HinhAnhFile"
+                                   class="form-control"
+                                   accept="image/*"
+                                   onchange="previewImage(this)" />
+
+                            <small class="text-muted">
+                                Chỉ nên chọn file ảnh JPG, PNG hoặc WEBP.
+                            </small>
+
+                            <div class="mt-3">
+                                <img id="previewImg"
+                                     src="#"
+                                     alt="Ảnh xem trước"
+                                     class="img-thumbnail"
+                                     style="max-width: 220px; display: none;" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Hủy
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Lưu dịch vụ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 mb-0">
+                Dịch vụ sau khi tạo sẽ được hiển thị trong danh sách dịch vụ nếu trạng thái là hoạt động.
+            </div>
+
+        </div>
+    </div>
 </div>
-	@section Scripts {
-			<script>
-				function previewImage(input) {
-					if (input.files && input.files[0]) {
-						var reader = new FileReader();
-						reader.onload = function (e) {
-							var previewImg = document.getElementById('previewImg');
-							previewImg.src = e.target.result;
-							previewImg.style.display = 'block';
-						}
-						reader.readAsDataURL(input.files[0]);
-					}
-				}
-			</script>
-			}
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
+    <script>
+        function previewImage(input) {
+            const previewImg = document.getElementById('previewImg');
 
+            if (!previewImg) {
+                return;
+            }
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewImg.src = '#';
+                previewImg.style.display = 'none';
+            }
+        }
+    </script>
+}

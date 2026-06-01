@@ -70,9 +70,31 @@ namespace Doantotnghiep.Controllers
                 new Claim(ClaimTypes.Name, user.TenTaiKhoan),
                 new Claim(ClaimTypes.Role, roleName)
            };
+ 
+            if(roleName == "KhachHang")
+            {
+                claims.Add(new Claim("IdKhachHang", user.IdKhachHang.Value.ToString()));
+            }
+            if(roleName == "NhanVien")
+            {
+                claims.Add(new Claim("IdNhanVien", user.IdNhanVien.Value.ToString()));
+            }
+
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            //return RedirectToAction("Index", "Home");
+
+            if (roleName == "Admin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            if (roleName == "NhanVien")
+            {
+                return RedirectToAction("Index", "NhanVienHoiThoaiAI");
+            }
+
             return RedirectToAction("Index", "Home");
         }
         [HttpPost]

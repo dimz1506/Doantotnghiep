@@ -15,6 +15,15 @@ namespace Doantotnghiep.Models.Entities
         public string TenDichVu { get; set; } = string.Empty;
         [Required]
         public string MoTaDichVu { get; set; } = string.Empty;
+        public string? LieuTrinhDichVu { get; set; }
+
+        public string? NguyenLieuSuDung { get; set; }
+
+        public string? QuyTrinhThucHien { get; set; }
+
+        public string? CongCuSuDung { get; set; }
+
+        public string? LuuYKhachHang { get; set; }
         [Required]
         public decimal GiaDichVu { get; set; }
         [Required]

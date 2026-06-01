@@ -1,0 +1,101 @@
+﻿@model List<Doantotnghiep.Models.ViewModel.ThongKe.LichHenTheoTrangThaiViewModel>
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Lịch hẹn theo trạng thái";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Lịch hẹn theo trạng thái</h2>
+            <p class="text-muted mb-0">
+                Thống kê số lượng lịch hẹn theo từng trạng thái xử lý.
+            </p>
+        </div>
+
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">
+            Quay lại Dashboard
+        </a>
+    </div>
+
+    @{
+        var tongLich = Model != null ? Model.Sum(x => x.SoLuong) : 0;
+    }
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <p class="text-muted mb-1">Tổng số lịch hẹn</p>
+            <h3 class="fw-bold mb-0">@tongLich</h3>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <strong>Bảng thống kê trạng thái lịch hẹn</strong>
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Trạng thái</th>
+                        <th>Số lượng</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (item.TrangThai == TrangThaiDatLich.ChoXacNhan)
+                                    {
+                                        <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+                                    }
+                                    else if (item.TrangThai == TrangThaiDatLich.DaXacNhan)
+                                    {
+                                        <span class="badge bg-success">Đã xác nhận</span>
+                                    }
+                                    else if (item.TrangThai == TrangThaiDatLich.DangThucHien)
+                                    {
+                                        <span class="badge bg-info text-dark">Đang thực hiện</span>
+                                    }
+                                    else if (item.TrangThai == TrangThaiDatLich.DaHoanThanh)
+                                    {
+                                        <span class="badge bg-primary">Đã hoàn thành</span>
+                                    }
+                                    else if (item.TrangThai == TrangThaiDatLich.DaHuy)
+                                    {
+                                        <span class="badge bg-danger">Đã hủy</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@item.TrangThai</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <strong>@item.SoLuong</strong>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="2" class="text-center py-4 text-muted">
+                                Chưa có dữ liệu lịch hẹn.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

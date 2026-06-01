@@ -86,7 +86,7 @@ namespace Doantotnghiep.Services
             return (true, "Tạo nhân viên thành công.");
         }
         //Dang nhap
-        public async Task<TaiKhoan?> LoginAsync(LoginVM model)
+        public async Task<LoginResultVM> LoginAsync(LoginVM model)
         {
             var user = await _context.TaiKhoans
                 .FirstOrDefaultAsync(tk => tk.TenTaiKhoan == model.TenDangNhap);
@@ -98,7 +98,35 @@ namespace Doantotnghiep.Services
                 model.MatKhau,
                 user.Salt,
                 user.Passwordhash);
-            return isValid ? user : null;
+            if(!isValid)
+            {
+                return null;
+            }
+            var result = new LoginResultVM
+            {
+                IdTaiKhoan = user.IdTaiKhoan,
+                TenTaiKhoan = user.TenTaiKhoan,
+                IdVaiTro = user.IdVaiTro
+            };
+            if(user.IdVaiTro == 2)
+            {
+                var nhanvien = await _context.NhanViens
+                    .FirstOrDefaultAsync(nv => nv.IdTaiKhoan == user.IdTaiKhoan);
+                if (nhanvien != null)
+                {
+                    result.IdNhanVien = nhanvien.IdNhanVien;
+                }
+            }
+            else if (user.IdVaiTro == 3)
+            {
+                var khachhang = await _context.KhachHangs
+                    .FirstOrDefaultAsync(kh => kh.IdTaiKhoan == user.IdTaiKhoan);
+                if (khachhang != null)
+                {
+                    result.IdKhachHang = khachhang.IdKhachHang;
+                }
+            }
+            return result;
         }
     }
 }

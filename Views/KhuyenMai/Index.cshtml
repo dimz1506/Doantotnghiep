@@ -1,0 +1,166 @@
+﻿@model List<Doantotnghiep.Models.Entities.KhuyenMai>
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Quản lý khuyến mãi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Quản lý khuyến mãi</h2>
+            <p class="text-muted mb-0">
+                Tạo và quản lý các chương trình khuyến mãi áp dụng cho dịch vụ.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Thêm khuyến mãi
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <strong>Danh sách khuyến mãi</strong>
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tên khuyến mãi</th>
+                        <th>Loại</th>
+                        <th>Giá trị giảm</th>
+                        <th>Thời gian</th>
+                        <th>Dịch vụ áp dụng</th>
+                        <th>Trạng thái</th>
+                        <th style="width: 220px;">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@item.TenKhuyenMai</strong>
+                                    @if (!string.IsNullOrWhiteSpace(item.MoTaKhuyenMai))
+                                    {
+                                        <br />
+                                        <small class="text-muted">@item.MoTaKhuyenMai</small>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (item.LoaiKhuyenMai == LoaiKhuyenMai.GiamTheoPhanTram)
+                                    {
+                                        <span class="badge bg-info text-dark">Giảm %</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-primary">Giảm tiền</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (item.LoaiKhuyenMai == LoaiKhuyenMai.GiamTheoPhanTram)
+                                    {
+                                        <strong>@item.GiaTriGiam%</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong>@item.GiaTriGiam.ToString("N0") VNĐ</strong>
+                                    }
+                                </td>
+
+                                <td>
+                                    @item.NgayBatDau.ToString("dd/MM/yyyy")
+                                    →
+                                    @item.NgayKetThuc.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td>
+                                    @if (item.DichVuKhuyenMais != null && item.DichVuKhuyenMais.Any())
+                                    {
+                                        foreach (var dv in item.DichVuKhuyenMais)
+                                        {
+                                            <span class="badge bg-secondary me-1 mb-1">
+                                                @dv.DichVu?.TenDichVu
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa chọn dịch vụ</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (item.TrangThaiKhuyenMai)
+                                    {
+                                        <span class="badge bg-success">Đang hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Tạm tắt</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.IdKhuyenMai"
+                                           class="btn btn-info btn-sm">
+                                            Chi tiết
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.IdKhuyenMai"
+                                           class="btn btn-warning btn-sm">
+                                            Sửa
+                                        </a>
+
+                                        <form asp-action="Delete"
+                                              asp-route-id="@item.IdKhuyenMai"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Bạn có chắc muốn xóa khuyến mãi này không?');">
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                Xóa
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                Chưa có khuyến mãi nào.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>

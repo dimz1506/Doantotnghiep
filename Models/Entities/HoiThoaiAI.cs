@@ -7,21 +7,31 @@ namespace Doantotnghiep.Models.Entities
     {
         [Key]
         public int IdHoiThoaiAI { get; set; }
-        [Required]
-        public int IdKhachHang { get; set; }
-        [Required]
+
+        public int? IdKhachHang { get; set; }
+
         [ForeignKey(nameof(IdKhachHang))]
-        public KhachHang KhachHang { get; set; }
-        [Required]
-        public string NoiDungHoiThoai { get; set; } = string.Empty;
-        [Required]
-        public string NoiDungTraLoi { get; set; } = string.Empty;
-        [Required]
-        public DateTime ThoiGianHoiThoai { get; set; } = DateTime.Now;
-        [Required]
-        public bool TrangThaiChuyenNV { get; set; }
-        [Required]
+        public KhachHang? KhachHang { get; set; }
+
         public int? IdNhanVien { get; set; }
+
+        [ForeignKey(nameof(IdNhanVien))]
         public NhanVien? NhanVien { get; set; }
+
+        [Required]
+        public DateTime ThoiGianBatDau { get; set; } = DateTime.Now;
+
+        public DateTime? ThoiGianKetThuc { get; set; }
+
+        [Required]
+        public bool CanNhanVienTuVan { get; set; } = false;
+
+        [Required]
+        public string TrangThaiHoiThoai { get; set; } = "DangChat";
+        // DangChat / ChoNhanVien / DaChuyenNhanVien / DaKetThuc
+
+        public string? GhiChuNoiBo { get; set; }
+
+        public ICollection<TinNhanAI> TinNhanAIs { get; set; } = new List<TinNhanAI>();
     }
 }

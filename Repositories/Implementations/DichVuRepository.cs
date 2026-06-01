@@ -89,5 +89,10 @@ namespace Doantotnghiep.Repositories.Implementations
                 return (false, ex.Message);
             }
         }
+        public async Task<List<DichVu>> GetDichVusByIdAsync(List<int> id)
+        {
+            return await _context.DichVus.Where(dv => id.Contains(dv.IdDichVu)).ToListAsync();
+        }
+
     }
 }

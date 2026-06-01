@@ -1,0 +1,133 @@
+﻿@model List<Doantotnghiep.Models.Entities.CaLamViec>
+
+@{
+    ViewData["Title"] = "Danh sách ca làm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="mb-1">Danh sách ca làm</h3>
+            <p class="text-muted mb-0">Quản lý các ca làm việc do admin tạo</p>
+        </div>
+
+        <a asp-action="TaoCaLam" asp-controller="AdminLichLamViec" class="btn btn-primary">
+            + Tạo ca làm
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Thông tin ca làm</strong>
+
+            <span class="badge bg-secondary">
+                Tổng: @(Model != null ? Model.Count : 0) ca
+            </span>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 60px;">#</th>
+                            <th>Tên ca</th>
+                            <th>Ngày làm</th>
+                            <th>Giờ bắt đầu</th>
+                            <th>Giờ kết thúc</th>
+                            <th>Số lượng tối đa</th>
+                            <th>Trạng thái đăng ký</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var stt = 1;
+
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@stt</td>
+
+                                    <td>
+                                        <strong>@item.TenCa</strong>
+                                    </td>
+
+                                    <td>
+                                        @item.NgayLam.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-info text-dark">
+                                            @item.GioBatDau.ToString("HH:mm")
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-warning text-dark">
+                                            @item.GioKetThuc.ToString("HH:mm")
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">
+                                            @item.SoLuongNhanVienToiDa nhân viên
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @if (item.MoDangKy)
+                                        {
+                                            <span class="badge bg-success">
+                                                Đang mở
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Đã đóng
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+
+                                stt++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <h5>Chưa có ca làm nào</h5>
+                                        <p class="mb-3">Bạn hãy tạo ca làm đầu tiên để nhân viên có thể đăng ký.</p>
+
+                                        <a asp-action="TaoCaLam" asp-controller="AdminLichLamViec" class="btn btn-primary">
+                                            + Tạo ca làm
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Index" asp-controller="AdminLichLamViec" class="btn btn-outline-secondary">
+            Quay lại trang quản lý
+        </a>
+    </div>
+</div>

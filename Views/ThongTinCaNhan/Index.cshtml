@@ -1,0 +1,184 @@
+﻿@using Doantotnghiep.Models.Entities
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    var loaiTaiKhoan = ViewBag.LoaiTaiKhoan as string;
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">Thông tin cá nhân</h2>
+                <p class="text-muted mb-0">
+                    Xem và quản lý thông tin tài khoản của bạn.
+                </p>
+            </div>
+
+            @if (loaiTaiKhoan == "NhanVien")
+            {
+                var nv = Model as NhanVien;
+
+                if (nv != null)
+                {
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Thông tin nhân viên</h5>
+                            <span class="badge bg-light text-dark">#@nv.IdNhanVien</span>
+                        </div>
+
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Tên nhân viên</label>
+                                <h5 class="fw-bold mb-0">@nv.TenNhanVien</h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Địa chỉ</label>
+                                @if (!string.IsNullOrWhiteSpace(nv.DiaChiNV))
+                                {
+                                    <strong>@nv.DiaChiNV</strong>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa có địa chỉ</span>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Chuyên môn</label>
+                                @if (!string.IsNullOrWhiteSpace(nv.ChuyenMonNV))
+                                {
+                                    <strong>@nv.ChuyenMonNV</strong>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa có chuyên môn</span>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Trạng thái</label>
+
+                                @if (nv.TrangThaiNV == TrangThaiNhanVien.DangLamViec)
+                                {
+                                    <span class="badge bg-success">Đang làm việc</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Đã nghỉ việc</span>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Tài khoản</label>
+                                <strong>@nv.TaiKhoan?.TenTaiKhoan</strong>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="text-muted d-block">Ngày tạo</label>
+                                <strong>@nv.NgayTaoNV.ToString("dd/MM/yyyy HH:mm")</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer bg-white d-flex justify-content-between">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                                Về trang chủ
+                            </a>
+
+                            <a asp-controller="NhanVien"
+                               asp-action="Edit"
+                               asp-route-id="@nv.IdNhanVien"
+                               class="btn btn-primary">
+                                Sửa thông tin
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else if (loaiTaiKhoan == "KhachHang")
+            {
+                var kh = Model as KhachHang;
+
+                if (kh != null)
+                {
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Thông tin khách hàng</h5>
+                            <span class="badge bg-light text-dark">#@kh.IdKhachHang</span>
+                        </div>
+
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Tên khách hàng</label>
+                                <h5 class="fw-bold mb-0">@kh.TenKhachHang</h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Địa chỉ</label>
+                                @if (!string.IsNullOrWhiteSpace(kh.DiaChiKhachHang))
+                                {
+                                    <strong>@kh.DiaChiKhachHang</strong>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa có địa chỉ</span>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Ghi chú</label>
+                                @if (!string.IsNullOrWhiteSpace(kh.GhiChuKH))
+                                {
+                                    <p class="mb-0">@kh.GhiChuKH</p>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Không có ghi chú</span>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted d-block">Tài khoản</label>
+                                <strong>@kh.TaiKhoan?.TenTaiKhoan</strong>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="text-muted d-block">Ngày tạo</label>
+                                <strong>@kh.NgayTaoKH.ToString("dd/MM/yyyy HH:mm")</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer bg-white d-flex justify-content-between">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                                Về trang chủ
+                            </a>
+
+                            <a asp-controller="KhachHang"
+                               asp-action="Edit"
+                               asp-route-id="@kh.IdKhachHang"
+                               class="btn btn-primary">
+                                Sửa thông tin
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    Không tìm thấy thông tin cá nhân phù hợp với tài khoản này.
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

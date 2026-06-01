@@ -3,94 +3,250 @@
 
 @{
     ViewData["Title"] = "Quản lý nhân viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    bool isAdmin = User.IsInRole("Admin");
+    bool isAdminOrNhanVien = User.IsInRole("Admin") || User.IsInRole("NhanVien");
+
+    var tongNhanVien = Model != null ? Model.Count() : 0;
+    var dangLam = Model != null ? Model.Count(x => x.TrangThaiNV == TrangThaiNhanVien.DangLamViec) : 0;
+    var nghiViec = Model != null ? Model.Count(x => x.TrangThaiNV != TrangThaiNhanVien.DangLamViec) : 0;
+    var coTaiKhoan = Model != null ? Model.Count(x => x.TaiKhoan != null) : 0;
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Danh sách nhân viên</h2>
-        @if (User.IsInRole("Admin"))
+<div class="admin-page">
+
+    <div class="page-header-card mb-4">
+        <div>
+            <p class="page-eyebrow mb-1">Quản trị nhân sự</p>
+            <h2 class="fw-bold mb-1">Quản lý nhân viên</h2>
+            <p class="text-muted mb-0">
+                Theo dõi thông tin nhân viên, chuyên môn, tài khoản và trạng thái làm việc.
+            </p>
+        </div>
+
+        @if (isAdmin)
         {
-            <a asp-controller="Admin" asp-action="TaoNhanVien" class="btn btn-success">Them moi nhan vien</a>
+            <a asp-controller="Admin"
+               asp-action="TaoNhanVien"
+               class="btn btn-primary btn-lg px-4">
+                + Thêm nhân viên
+            </a>
         }
     </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
 
-    <form method="get" class="mb-3">
-        <div class="input-group" style="max-width: 400px;">
-            <input type="text" name="searchString" class="form-control"
-                   placeholder="Tìm kiếm nhân viên..."
-                   value="@ViewData["CurrentFilter"]" />
-            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-
-            @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"] as string))
-            {
-                <a asp-action="Index" class="btn btn-secondary">Xóa bộ lọc</a>
-            }
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary-subtle text-primary">👥</div>
+                <div>
+                    <p class="text-muted mb-1">Tổng nhân viên</p>
+                    <h3 class="fw-bold mb-0">@tongNhanVien</h3>
+                </div>
+            </div>
         </div>
-    </form>
 
-    <table class="table table-bordered table-hover">
-        <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Tên nhân viên</th>
-                <th>Địa chỉ</th>
-                <th>Chuyên môn</th>
-                <th>Ngày tạo</th>
-                <th>Trạng thái</th>
-                <th>Tài khoản</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!Model.Any())
-            {
-                <tr>
-                    <td colspan="8" class="text-center">Không có nhân viên nào</td>
-                </tr>
-            }
-            else
-            {
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-success-subtle text-success">✅</div>
+                <div>
+                    <p class="text-muted mb-1">Đang làm việc</p>
+                    <h3 class="fw-bold mb-0">@dangLam</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-secondary-subtle text-secondary">⛔</div>
+                <div>
+                    <p class="text-muted mb-1">Đã nghỉ việc</p>
+                    <h3 class="fw-bold mb-0">@nghiViec</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-info-subtle text-info">🔐</div>
+                <div>
+                    <p class="text-muted mb-1">Có tài khoản</p>
+                    <h3 class="fw-bold mb-0">@coTaiKhoan</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-card mb-4">
+        <form method="get">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-9">
+                    <input type="text"
+                           name="searchString"
+                           class="form-control form-control-lg"
+                           placeholder="Tìm kiếm nhân viên theo tên, địa chỉ, chuyên môn..."
+                           value="@ViewData["CurrentFilter"]" />
+                </div>
+
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                        Tìm kiếm
+                    </button>
+
+                    @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"] as string))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                            Xóa
+                        </a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h5 class="fw-bold mb-1">Danh sách nhân viên</h5>
+                <p class="text-muted mb-0">
+                    Danh sách nhân viên hiện có trong hệ thống.
+                </p>
+            </div>
+
+            <span class="badge bg-dark px-3 py-2">
+                Tổng: @tongNhanVien
+            </span>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h5 class="fw-bold">Không có nhân viên nào</h5>
+                <p class="text-muted mb-3">
+                    Hiện chưa có dữ liệu nhân viên phù hợp.
+                </p>
+
+                @if (isAdmin)
+                {
+                    <a asp-controller="Admin" asp-action="TaoNhanVien" class="btn btn-primary">
+                        + Thêm nhân viên
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="employee-grid">
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>@item.IdNhanVien</td>
-                        <td>@item.TenNhanVien</td>
-                        <td>@item.DiaChiNV</td>
-                        <td>@item.ChuyenMonNV</td>
-                        <td>@item.NgayTaoNV.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>
+                    <div class="employee-card">
+                        <div class="employee-top">
+                            <div class="employee-avatar">
+                                @(string.IsNullOrWhiteSpace(item.TenNhanVien)
+                                                        ? "N"
+                                                        : item.TenNhanVien.Trim().Substring(0, 1).ToUpper())
+                    </div>
+
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">@item.TenNhanVien</h5>
+                                        <p class="text-muted small mb-0">Mã nhân viên: #@item.IdNhanVien</p>
+                                    </div>
+
                             @if (item.TrangThaiNV == TrangThaiNhanVien.DangLamViec)
+                                    {
+                                        <span class="badge bg-success">Đang làm</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Đã nghỉ</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="employee-info">
+                            <div class="info-line">
+                                <span class="info-label">📍 Địa chỉ</span>
+                                <span class="info-value">
+                                    @(string.IsNullOrWhiteSpace(item.DiaChiNV) ? "Chưa có địa chỉ" : item.DiaChiNV)
+                                </span>
+                            </div>
+
+                            <div class="info-line">
+                                <span class="info-label">💆 Chuyên môn</span>
+                                <span class="info-value">
+                                    @(string.IsNullOrWhiteSpace(item.ChuyenMonNV) ? "Chưa có chuyên môn" : item.ChuyenMonNV)
+                                </span>
+                            </div>
+
+                            <div class="info-line">
+                                <span class="info-label">📅 Ngày tạo</span>
+                                <span class="info-value">@item.NgayTaoNV.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+
+                            @if (isAdmin)
                             {
-                                <span class="badge bg-success">Hoạt động</span>
+                                <div class="info-line">
+                                    <span class="info-label">🔐 Tài khoản</span>
+                                    <span class="info-value">
+                                        @if (item.TaiKhoan != null)
+                                        {
+                                            <span class="badge bg-info text-dark">
+                                                @item.TaiKhoan.TenTaiKhoan
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Chưa có</span>
+                                        }
+                                    </span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="employee-actions">
+                            @if (isAdminOrNhanVien)
+                            {
+                                <a asp-action="Details"
+                                   asp-route-id="@item.IdNhanVien"
+                                   class="btn btn-outline-primary flex-fill">
+                                    Chi tiết
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.IdNhanVien"
+                                   class="btn btn-primary flex-fill">
+                                    Sửa
+                                </a>
                             }
                             else
                             {
-                                <span class="badge bg-secondary">Không hoạt động</span>
+                                <span class="text-muted">Không có quyền</span>
                             }
-                        </td>
-						@if (User.IsInRole("Admin")){
-                            <td>@item.TaiKhoan?.TenTaiKhoan</td>
-                        }
-                        <td>
-                            @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
-                            {
-                                <a asp-action="Edit" asp-route-id="@item.IdNhanVien" class="btn btn-sm btn-primary">Sửa</a>
-                                <a asp-action="Details" asp-route-id="@item.IdNhanVien" class="btn btn-sm btn-info">Chi tiết</a>
-                            }
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 }
-            }
-        </tbody>
-    </table>
+            </div>
+        }
+    </div>
+
 </div>

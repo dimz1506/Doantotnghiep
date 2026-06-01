@@ -1,0 +1,293 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Spa Admin</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Doantotnghiep.styles.css" asp-append-version="true" />
+</head>
+
+<body class="admin-body">
+
+    <div class="admin-wrapper">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-brand">
+                <a asp-controller="Admin"
+                   asp-action="Index"
+                   class="text-decoration-none text-white d-flex align-items-center gap-2 ajax-admin-link">
+                    <div class="admin-logo">S</div>
+                    <div>
+                        <div class="fw-bold fs-5">Spa Admin</div>
+                        <small class="text-secondary">Quản trị hệ thống</small>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="admin-menu">
+
+                @if (User.IsInRole("Admin"))
+                {
+                    
+                    <a class="admin-menu-link @(currentController == "Admin" && currentAction == "Index" ? "active" : "")"
+                       asp-controller="Admin"
+                       asp-action="Index">
+                        <span>🏠</span>
+                        <span>Tổng quan</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVien" ? "active" : "")"
+                       asp-controller="NhanVien"
+                       asp-action="Index">
+                        <span>👩‍💼</span>
+                        <span>Quản lý nhân viên</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "KhachHang" ? "active" : "")"
+                       asp-controller="KhachHang"
+                       asp-action="Index">
+                        <span>👤</span>
+                        <span>Quản lý khách hàng</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "LoaiDichVu" ? "active" : "")"
+                       asp-controller="LoaiDichVu"
+                       asp-action="Index">
+                        <span>📂</span>
+                        <span>Loại dịch vụ</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "DichVu" ? "active" : "")"
+                       asp-controller="DichVu"
+                       asp-action="Index">
+                        <span>💆</span>
+                        <span>Quản lý dịch vụ</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "KhuyenMai" ? "active" : "")"
+                       asp-controller="KhuyenMai"
+                       asp-action="Index">
+                        <span>🎁</span>
+                        <span>Quản lý khuyến mãi</span>
+                    </a>
+
+                    <div class="admin-menu-title">AI</div>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "LoaiTriThuc" ? "active" : "")"
+                       asp-controller="LoaiTriThuc"
+                       asp-action="Index">
+                        <span>🧠</span>
+                        <span>Loại tri thức AI</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "TriThuc" ? "active" : "")"
+                       asp-controller="TriThuc"
+                       asp-action="Index">
+                        <span>🤖</span>
+                        <span>Tri thức AI</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "AdminHoiThoaiAI" ? "active" : "")"
+                       asp-controller="AdminHoiThoaiAI"
+                       asp-action="Index">
+                        <span>💬</span>
+                        <span>Giám sát hội thoại AI</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "AdminTroLyAI" ? "active" : "")"
+                       asp-controller="AdminTroLyAI"
+                       asp-action="Index">
+                        <span>📈</span>
+                        <span>Trợ lý AI Admin</span>
+                    </a>
+                }
+
+                @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+                {
+                    <div class="admin-menu-title">Vận hành</div>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "DatLich" ? "active" : "")"
+                       asp-controller="DatLich"
+                       asp-action="Index">
+                        <span>📅</span>
+                        <span>Quản lý đặt lịch</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "HoaDon" ? "active" : "")"
+                       asp-controller="HoaDon"
+                       asp-action="Index">
+                        <span>🧾</span>
+                        <span>Quản lý hóa đơn</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "AdminLichLamViec" ? "active" : "")"
+                       asp-controller="AdminLichLamViec"
+                       asp-action="DanhSachLichLam">
+                        <span>🕒</span>
+                        <span>Quản lý lịch làm việc</span>
+                    </a>
+                }
+
+                @if (User.IsInRole("NhanVien"))
+                {
+                    <div class="admin-menu-title">Nhân viên</div>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVienHoiThoaiAI" ? "active" : "")"
+                       asp-controller="NhanVienHoiThoaiAI"
+                       asp-action="Index">
+                        <span>💬</span>
+                        <span>Hội thoại tư vấn</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVienDangKyCa" && currentAction == "Index" ? "active" : "")"
+                       asp-controller="NhanVienDangKyCa"
+                       asp-action="Index">
+                        <span>📝</span>
+                        <span>Đăng ký ca làm</span>
+                    </a>
+
+                    <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVienDangKyCa" && currentAction == "LichLamCuaToi" ? "active" : "")"
+                       asp-controller="NhanVienDangKyCa"
+                       asp-action="LichLamCuaToi">
+                        <span>📌</span>
+                        <span>Lịch làm của tôi</span>
+                    </a>
+                }
+   
+
+            </nav>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="admin-main">
+
+            <header class="admin-topbar">
+                <div>
+                    <h5 class="fw-bold mb-0">@ViewData["Title"]</h5>
+                    <small class="text-muted">Quản lý hoạt động spa</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <span class="text-muted small">
+                            Xin chào, <strong>@User.Identity.Name</strong>
+                        </span>
+                    }
+
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary btn-sm normal-link">
+                        Về trang khách
+                    </a>
+
+                    <form asp-controller="Auth"
+                          asp-action="DangXuat"
+                          method="post"
+                          class="mb-0">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Đăng xuất
+                        </button>
+                    </form>
+                </div>
+            </header>
+
+            <section class="admin-content" id="adminContent">
+                @RenderBody()
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const adminContent = document.getElementById("adminContent");
+
+            document.querySelectorAll(".ajax-admin-link").forEach(function (link) {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    const url = this.href;
+
+                            document.querySelectorAll(".admin-menu-link").forEach(x => {
+            x.classList.remove("active");
+        });
+
+                    this.classList.add("active");
+
+                    adminContent.classList.add("admin-loading");
+
+                    fetch(url, {
+                        method: "GET",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Không tải được nội dung.");
+                            }
+
+                            return response.text();
+                        })
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, "text/html");
+
+                            const newContent = doc.querySelector("#adminContent");
+
+                            if (newContent) {
+                                adminContent.innerHTML = newContent.innerHTML;
+                            } else {
+                                const bodyContent = doc.querySelector("body");
+                                adminContent.innerHTML = bodyContent ? bodyContent.innerHTML : html;
+                            }
+
+                            const newTitle = doc.querySelector("title");
+                            if (newTitle) {
+                                document.title = newTitle.innerText;
+                            }
+
+                            history.pushState(null, "", url);
+                        })
+                        .catch(error => {
+                            adminContent.innerHTML = `
+                                <div class="alert alert-danger">
+                                    Không tải được nội dung. Vui lòng thử lại.
+                                </div>
+                            `;
+                        })
+                        .finally(() => {
+                            adminContent.classList.remove("admin-loading");
+                        });
+                });
+            });
+
+            window.addEventListener("popstate", function () {
+                location.reload();
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

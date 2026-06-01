@@ -18,12 +18,10 @@ namespace Doantotnghiep.Models.Entities
         public decimal TongTienGiamGia { get; set; }
         public decimal TongTienSauGiamGia { get; set; }
         [Required]
-        public TTHoaDon TrangThaiHoaDon { get; set; }
-        [Required]
+        public TrangThaiHoaDon TrangThaiHoaDon { get; set; }
         public PhuongThucTT? PhuongThucTT { get; set; }
-        [Required]
         public DateTime? NgayThanhToan { get; set; }
-        [Required]
+       
         public DateTime NgayTaoHoaDon { get; set; } = DateTime.Now;
         public ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; }
     }

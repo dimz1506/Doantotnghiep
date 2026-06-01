@@ -1,0 +1,67 @@
+﻿@model List<Doantotnghiep.Models.Entities.LoaiTriThuc>
+
+@{
+    ViewData["Title"] = "Loại tri thức";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Loại tri thức</h2>
+            <p class="text-muted mb-0">Quản lý nhóm dữ liệu tri thức cho chatbot AI.</p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">+ Thêm loại tri thức</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tên loại</th>
+                        <th>Mô tả</th>
+                        <th>Số tri thức</th>
+                        <th style="width:180px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>@item.TenLoaiTriThuc</strong></td>
+                                <td>@(item.MoTaLoaiTriThuc ?? "Không có")</td>
+                                <td>@(item.TriThucs?.Count(x => !x.IsDeleted) ?? 0)</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.IdLoaiTriThuc" class="btn btn-warning btn-sm">Sửa</a>
+
+                                    <form asp-action="Delete" asp-route-id="@item.IdLoaiTriThuc" method="post" class="d-inline"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa loại tri thức này không?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                Chưa có loại tri thức nào.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

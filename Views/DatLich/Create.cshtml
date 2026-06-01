@@ -1,0 +1,218 @@
+﻿@model Doantotnghiep.Models.ViewModel.CreateDatLichViewModel
+
+@{
+    ViewData["Title"] = "Tạo đặt lịch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">Tạo đặt lịch</h2>
+                <p class="text-muted mb-0">
+                    Chọn nhân viên, dịch vụ và thời gian hẹn cho khách hàng.
+                </p>
+            </div>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin đặt lịch</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="IdNhanVien" class="form-label fw-semibold">
+                                Nhân viên phụ trách
+                            </label>
+
+                            <select asp-for="IdNhanVien"
+                                    asp-items="Model.NhanViens"
+                                    class="form-select">
+                                <option value="">-- Chọn nhân viên --</option>
+                            </select>
+
+                            <span asp-validation-for="IdNhanVien" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="IdDichVu" class="form-label fw-semibold">
+                                Dịch vụ
+                            </label>
+
+                            <select asp-for="IdDichVu"
+                                    class="form-select"
+                                    id="dichVuSelect"
+                                    multiple>
+                                @foreach (var dv in Model.DichVus)
+                                {
+                                    <option value="@dv.Value"
+                                            data-thoiluong="@dv.ThoiLuongDV">
+                                        @dv.Text
+                                    </option>
+                                }
+                            </select>
+
+                            <small class="text-muted">
+                                Giữ phím Ctrl để chọn nhiều dịch vụ.
+                            </small>
+
+                            <span asp-validation-for="IdDichVu" class="text-danger d-block"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NgayHenLich" class="form-label fw-semibold">
+                                    Ngày hẹn lịch
+                                </label>
+
+                                <input asp-for="NgayHenLich"
+                                       type="date"
+                                       class="form-control"
+                                       id="ngayHenLich" />
+
+                                <span asp-validation-for="NgayHenLich" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioBatDauDV" class="form-label fw-semibold">
+                                    Giờ bắt đầu
+                                </label>
+
+                                <input asp-for="GioBatDauDV"
+                                       type="time"
+                                       step="60"
+                                       class="form-control"
+                                       id="gioBatDau" />
+
+                                <span asp-validation-for="GioBatDauDV" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Giờ dự kiến kết thúc
+                            </label>
+
+                            <input type="text"
+                                   class="form-control bg-light"
+                                   id="gioKetThucDuKien"
+                                   readonly
+                                   placeholder="Tự động tính theo thời lượng dịch vụ" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="GhiChuDatLich" class="form-label fw-semibold">
+                                Ghi chú đặt lịch
+                            </label>
+
+                            <textarea asp-for="GhiChuDatLich"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Nhập ghi chú nếu có..."></textarea>
+
+                            <span asp-validation-for="GhiChuDatLich" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Quay lại
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Lưu đặt lịch
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 mb-0">
+                Hệ thống sẽ tự tính giờ kết thúc dự kiến dựa trên tổng thời lượng các dịch vụ đã chọn.
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function tinhGioKetThuc() {
+            const ngayHenInput = document.getElementById('ngayHenLich');
+            const gioBatDauInput = document.getElementById('gioBatDau');
+            const dichVuSelect = document.getElementById('dichVuSelect');
+            const gioKetThucInput = document.getElementById('gioKetThucDuKien');
+
+            if (!ngayHenInput || !gioBatDauInput || !dichVuSelect || !gioKetThucInput) {
+                return;
+            }
+
+            const ngayHen = ngayHenInput.value;
+            const gioBatDau = gioBatDauInput.value;
+
+            if (!ngayHen || !gioBatDau) {
+                gioKetThucInput.value = '';
+                return;
+            }
+
+            let tongThoiLuong = 0;
+
+            for (let option of dichVuSelect.selectedOptions) {
+                const thoiLuong = parseInt(option.dataset.thoiluong || "0");
+                tongThoiLuong += thoiLuong;
+            }
+
+            if (tongThoiLuong <= 0) {
+                gioKetThucInput.value = '';
+                return;
+            }
+
+            const batDau = new Date(`${ngayHen}T${gioBatDau}`);
+            batDau.setMinutes(batDau.getMinutes() + tongThoiLuong);
+
+            const ngay = String(batDau.getDate()).padStart(2, '0');
+            const thang = String(batDau.getMonth() + 1).padStart(2, '0');
+            const nam = batDau.getFullYear();
+            const gio = String(batDau.getHours()).padStart(2, '0');
+            const phut = String(batDau.getMinutes()).padStart(2, '0');
+
+            gioKetThucInput.value = `${ngay}/${thang}/${nam} ${gio}:${phut}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const dichVuSelect = document.getElementById('dichVuSelect');
+            const gioBatDauInput = document.getElementById('gioBatDau');
+            const ngayHenInput = document.getElementById('ngayHenLich');
+
+            if (dichVuSelect) {
+                dichVuSelect.addEventListener('change', tinhGioKetThuc);
+            }
+
+            if (gioBatDauInput) {
+                gioBatDauInput.addEventListener('change', tinhGioKetThuc);
+            }
+
+            if (ngayHenInput) {
+                ngayHenInput.addEventListener('change', tinhGioKetThuc);
+            }
+        });
+    </script>
+}

@@ -24,7 +24,10 @@ namespace Doantotnghiep.Data
         public DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
         public DbSet<DichVuKhuyenMai> DichVuKhuyenMais { get; set; }
         public DbSet<ChiTietDatLich> ChiTietDatLiches { get; set; }
-        
+        public DbSet<DangKyCaLamViec> DangKyCaLamViecs { get; set; }
+        public DbSet<CaLamViec> CaLamViecs { get; set; }
+        public DbSet<TinNhanAI> TinNhanAIs { get; set; }
+        public DbSet<ThongBao> ThongBaos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

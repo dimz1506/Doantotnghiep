@@ -1,6 +1,7 @@
 ﻿using Doantotnghiep.Models.Entities;
 using Doantotnghiep.Repositories.Interface;
 using Doantotnghiep.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Doantotnghiep.Services.Implementations
 {
@@ -81,6 +82,10 @@ namespace Doantotnghiep.Services.Implementations
                 return (false, dichvu1.error);
             }
             return dichvu1;
+        }
+        public async Task<List<DichVu>> GetDichVusByIdAsync(List<int> id)
+        {
+            return await _dichvuRepository.GetDichVusByIdAsync(id);
         }
     }
 }

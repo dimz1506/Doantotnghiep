@@ -23,6 +23,12 @@ namespace Doantotnghiep.Models.Entities
         [ForeignKey(nameof(IdKhuyenMai))]
         public KhuyenMai? KhuyenMai { get; set; }
         [Required]
+        public decimal TienGiam { get; set; } = 0;
+
+        [NotMapped]
         public decimal ThanhTien => SoLuongDV * DonGiaDV;
+
+        [NotMapped]
+        public decimal ThanhTienSauGiam => ThanhTien - TienGiam;
     }
 }

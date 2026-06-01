@@ -3,64 +3,169 @@
 
 @{
     ViewData["Title"] = "Sửa thông tin nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool coQuyenSua =
+        User.IsInRole("Admin") ||
+        (
+            User.IsInRole("NhanVien") &&
+            User.Identity != null &&
+            User.Identity.IsAuthenticated &&
+            User.Identity.Name == Model.TaiKhoan?.TenTaiKhoan
+        );
 }
-@if (User.IsInRole("Admin") || (User.IsInRole("NhanVien") && User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name == Model.TaiKhoan?.TenTaiKhoan))
+
+@if (coQuyenSua)
 {
-<div class="container mt-4">
-    <h2>Sửa thông tin nhân viên</h2>
+    <div class="container mt-4 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
 
-    <form asp-action="Edit" method="post">
-        @Html.AntiForgeryToken()
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">Sửa thông tin nhân viên</h2>
+                        <p class="text-muted mb-0">
+                            Cập nhật thông tin cá nhân, chuyên môn và trạng thái nhân viên.
+                        </p>
+                    </div>
 
-        <input type="hidden" asp-for="IdNhanVien" />
-        <input type="hidden" asp-for="IdTaiKhoan" />
-        <input type="hidden" asp-for="NgayTaoNV" />
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Quay lại
+                    </a>
+                </div>
 
-        <div class="mb-3">
-            <label class="form-label">Tên nhân viên</label>
-            <input asp-for="TenNhanVien" class="form-control" />
-            <span asp-validation-for="TenNhanVien" class="text-danger"></span>
-        </div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Thông tin nhân viên</h5>
+                        <span class="badge bg-light text-dark">#@Model.IdNhanVien</span>
+                    </div>
 
-        <div class="mb-3">
-            <label class="form-label">Địa chỉ</label>
-            <input asp-for="DiaChiNV" class="form-control" />
-        </div>
+                    <div class="card-body p-4">
+                        <form asp-action="Edit" method="post">
+                            @Html.AntiForgeryToken()
 
-        <div class="mb-3">
-            <label class="form-label">Chuyên môn</label>
-            <input asp-for="ChuyenMonNV" class="form-control" />
-            <span asp-validation-for="ChuyenMonNV" class="text-danger"></span>
-        </div>
-        @if (User.IsInRole("Admin"))
-        {
-            <div class="mb-3">
-                <label class="form-label">Trạng thái</label>
-                <select asp-for="TrangThaiNV" class="form-select"
-                asp-items="Html.GetEnumSelectList<TrangThaiNhanVien>()">
-                </select>
+                            <input type="hidden" asp-for="IdNhanVien" />
+                            <input type="hidden" asp-for="IdTaiKhoan" />
+                            <input type="hidden" asp-for="NgayTaoNV" />
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="mb-3">
+                                <label asp-for="TenNhanVien" class="form-label fw-semibold">
+                                    Tên nhân viên
+                                </label>
+
+                                <input asp-for="TenNhanVien"
+                                       class="form-control"
+                                       placeholder="Nhập tên nhân viên" />
+
+                                <span asp-validation-for="TenNhanVien" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="DiaChiNV" class="form-label fw-semibold">
+                                    Địa chỉ
+                                </label>
+
+                                <input asp-for="DiaChiNV"
+                                       class="form-control"
+                                       placeholder="Nhập địa chỉ nhân viên" />
+
+                                <span asp-validation-for="DiaChiNV" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ChuyenMonNV" class="form-label fw-semibold">
+                                    Chuyên môn
+                                </label>
+
+                                <input asp-for="ChuyenMonNV"
+                                       class="form-control"
+                                       placeholder="Ví dụ: Bác sĩ, lễ tân, phụ tá..." />
+
+                                <span asp-validation-for="ChuyenMonNV" class="text-danger"></span>
+                            </div>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="mb-3">
+                                    <label asp-for="TrangThaiNV" class="form-label fw-semibold">
+                                        Trạng thái nhân viên
+                                    </label>
+
+                                    <select asp-for="TrangThaiNV"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TrangThaiNhanVien>()">
+                                    </select>
+
+                                    <span asp-validation-for="TrangThaiNV" class="text-danger"></span>
+                                </div>
+                            }
+
+                            <div class="mb-3">
+                                <label asp-for="NgayTaoNV" class="form-label fw-semibold">
+                                    Ngày tạo
+                                </label>
+
+                                <input asp-for="NgayTaoNV"
+                                       class="form-control bg-light"
+                                       readonly />
+
+                                <small class="text-muted">
+                                    Ngày tạo không thể chỉnh sửa.
+                                </small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    Tài khoản liên kết
+                                </label>
+
+                                <input value="@Model.TaiKhoan?.TenTaiKhoan"
+                                       class="form-control bg-light"
+                                       readonly />
+
+                                <small class="text-muted">
+                                    Tài khoản đăng nhập gắn với nhân viên này.
+                                </small>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a asp-action="Index" class="btn btn-outline-secondary">
+                                    Hủy
+                                </a>
+
+                                <button type="submit" class="btn btn-primary px-4">
+                                    Lưu thay đổi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mt-3 mb-0">
+                    Nhân viên chỉ có thể sửa thông tin của chính mình. Admin có thể sửa trạng thái nhân viên.
+                </div>
+
             </div>
-        }
-
-        <div class="mb-3">
-            <label class="form-label">Ngày tạo</label>
-            <input asp-for="NgayTaoNV" class="form-control" readonly />
         </div>
-        
-        <div class="mb-3">
-            <label class="form-label">Tài khoản</label>
-            <input value="@Model.TaiKhoan?.TenTaiKhoan" class="form-control" readonly />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Lưu</button>
-        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-    </form>
-</div>
+    </div>
 }
 else
 {
-<div class="container mt-4">
-	<div class="alert alert-danger">Bạn không có quyền truy cập trang này.</div>
-	<a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-</div>
+    <div class="container mt-4">
+        <div class="alert alert-danger">
+            Bạn không có quyền truy cập trang này.
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Quay lại
+        </a>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

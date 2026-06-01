@@ -1,0 +1,82 @@
+﻿@model Doantotnghiep.Models.ViewModel.KhachHangDatLichViewModel
+
+@{
+    ViewData["Title"] = "Sửa lịch khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">Sửa lịch khách hàng</h2>
+                <p class="text-muted mb-0">
+                    Cập nhật ngày hẹn và ghi chú cho lịch đặt của khách hàng.
+                </p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin lịch hẹn</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="EditKhachHang" asp-route-id="@Model.IdDatLich" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="IdDatLich" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="NgayHenLich" class="form-label fw-semibold">
+                                Ngày hẹn lịch
+                            </label>
+
+                            <input asp-for="NgayHenLich"
+                                   type="date"
+                                   class="form-control" />
+
+                            <span asp-validation-for="NgayHenLich" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="GhiChuDatLich" class="form-label fw-semibold">
+                                Ghi chú đặt lịch
+                            </label>
+
+                            <textarea asp-for="GhiChuDatLich"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Nhập ghi chú nếu có..."></textarea>
+
+                            <span asp-validation-for="GhiChuDatLich" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Quay lại
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Cập nhật lịch
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 mb-0">
+                Sau khi cập nhật, thông tin lịch hẹn sẽ được lưu lại trong hệ thống.
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

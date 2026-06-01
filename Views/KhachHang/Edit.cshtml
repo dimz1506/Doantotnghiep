@@ -1,38 +1,115 @@
 ﻿@model Doantotnghiep.Models.ViewModel.EditKhachHangViewModel
-@using Doantotnghiep.Models.Enum
 
 @{
-    ViewData["Title"] = "Sửa thông tin khach hang";
+    ViewData["Title"] = "Sửa thông tin khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <div class="container mt-4">
-        <h2>Sửa thông tin Khach hang</h2>
 
-        <form asp-action="Edit" method="post">
-            @Html.AntiForgeryToken()
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
 
-            <input type="hidden" asp-for="IdKhachHang" />
-            <input type="hidden" asp-for="NgayTaoKH" />
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Sửa thông tin khách hàng</h2>
+                    <p class="text-muted mb-0">
+                        Cập nhật thông tin cá nhân và ghi chú của khách hàng.
+                    </p>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Tên Khach Hang</label>
-                <input asp-for="TenKhachHang" class="form-control" />
-                <span asp-validation-for="TenKhachHang" class="text-danger"></span>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    Quay lại
+                </a>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Địa chỉ</label>
-                <input asp-for="DiaChiKhachHang" class="form-control" />
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin khách hàng</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="IdKhachHang" />
+                        <input type="hidden" asp-for="NgayTaoKH" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="TenKhachHang" class="form-label fw-semibold">
+                                Tên khách hàng
+                            </label>
+
+                            <input asp-for="TenKhachHang"
+                                   class="form-control"
+                                   placeholder="Nhập tên khách hàng" />
+
+                            <span asp-validation-for="TenKhachHang" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DiaChiKhachHang" class="form-label fw-semibold">
+                                Địa chỉ
+                            </label>
+
+                            <input asp-for="DiaChiKhachHang"
+                                   class="form-control"
+                                   placeholder="Nhập địa chỉ khách hàng" />
+
+                            <span asp-validation-for="DiaChiKhachHang" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="GhiChuKH" class="form-label fw-semibold">
+                                Ghi chú
+                            </label>
+
+                            <textarea asp-for="GhiChuKH"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Nhập ghi chú nếu có..."></textarea>
+
+                            <span asp-validation-for="GhiChuKH" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="NgayTaoKH" class="form-label fw-semibold">
+                                Ngày tạo
+                            </label>
+
+                            <input asp-for="NgayTaoKH"
+                                   class="form-control bg-light"
+                                   readonly />
+
+                            <small class="text-muted">
+                                Thông tin ngày tạo không thể chỉnh sửa.
+                            </small>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Hủy
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Ghi chu:</label>
-				<input asp-for="GhiChuKH" class="form-control" />
+
+            <div class="alert alert-info mt-3 mb-0">
+                Sau khi lưu, thông tin khách hàng sẽ được cập nhật trong hệ thống.
             </div>
-            <div class="mb-3">
-                <label class="form-label">Ngày tạo</label>
-                <input asp-for="NgayTaoKH" class="form-control" readonly />
-            </div>
-           
-            <button type="submit" class="btn btn-primary">Lưu</button>
-            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-        </form>
+
+        </div>
     </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

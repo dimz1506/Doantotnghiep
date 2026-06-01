@@ -132,12 +132,6 @@ D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\scopedcss\projectbu
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets.build.json
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets.development.json
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets\msbuild.Doantotnghiep.Microsoft.AspNetCore.StaticWebAssets.props
-D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets\msbuild.Doantotnghiep.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets\msbuild.build.Doantotnghiep.props
-D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Doantotnghiep.props
-D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Doantotnghiep.props
-D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets.pack.json
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\Doantotn.9D4E9112.Up2Date
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\Doantotnghiep.dll
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\refint\Doantotnghiep.dll
@@ -147,4 +141,9 @@ D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\ref\Doantotnghiep.d
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\bin\Debug\net8.0\Konscious.Security.Cryptography.Argon2.dll
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\bin\Debug\net8.0\Konscious.Security.Cryptography.Blake2.dll
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\Doantotnghiep.sourcelink.json
+D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\rjimswa.dswa.cache.json
+D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets.build.json.cache
 D:\Dự án ASP\Doantotnghiep\Doantotnghiep\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

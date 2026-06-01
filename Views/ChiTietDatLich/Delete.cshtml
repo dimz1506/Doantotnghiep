@@ -1,0 +1,65 @@
+﻿@model Doantotnghiep.Models.Entities.ChiTietDatLich
+
+@{
+    ViewData["Title"] = "Xóa chi tiết đặt lịch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Xác nhận xóa chi tiết đặt lịch</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="alert alert-warning">
+                        Bạn có chắc muốn xóa dịch vụ này khỏi lịch đặt không?
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted d-block">Dịch vụ</label>
+                        <strong>@Model.DichVu?.TenDichVu</strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted d-block">Giá dịch vụ</label>
+                        <strong>@Model.GiaDichVu.ToString("N0") VNĐ</strong>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-muted d-block">Số lượng</label>
+                        <strong>@Model.SoLuong</strong>
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="IdChiTietDatLich" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index"
+                               asp-route-idDatLich="@Model.IdDatLich"
+                               class="btn btn-outline-secondary">
+                                Quay lại
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Bạn chắc chắn muốn xóa dịch vụ này?');">
+                                Xóa dịch vụ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 mb-0">
+                Thao tác này chỉ xóa dịch vụ khỏi chi tiết đặt lịch, không xóa dịch vụ khỏi hệ thống.
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -4,7 +4,7 @@
     {
         TienMat = 0,
         ChuyenKhoan = 1,
-        ViDienTu = 2,
-        TheTinDung = 3
+        ViDienTu = 2
+      
     }
 }

@@ -1,0 +1,44 @@
+﻿@model Doantotnghiep.Models.ViewModel.AdminAI.AdminAIChatViewModel
+
+@{
+    ViewData["Title"] = "Trợ lý AI Admin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <h2 class="fw-bold mb-3">Trợ lý AI Admin</h2>
+    <p class="text-muted">
+        Hỏi AI về doanh thu, dịch vụ bán chạy, hóa đơn và hiệu suất nhân viên.
+    </p>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <form asp-action="Index" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Câu hỏi cho AI</label>
+                    <input asp-for="CauHoi"
+                           class="form-control"
+                           placeholder="Ví dụ: Dịch vụ nào bán chạy nhất?" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Hỏi AI
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.CauTraLoi))
+    {
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-white fw-bold">
+                AI trả lời
+            </div>
+            <div class="card-body">
+                <pre style="white-space: pre-wrap; font-family: inherit;">@Model.CauTraLoi</pre>
+            </div>
+        </div>
+    }
+</div>

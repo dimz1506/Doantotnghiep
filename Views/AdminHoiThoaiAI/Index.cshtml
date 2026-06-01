@@ -1,0 +1,70 @@
+﻿@model List<Doantotnghiep.Models.Entities.HoiThoaiAI>
+
+@{
+    ViewData["Title"] = "Giám sát hội thoại AI";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <h2 class="fw-bold mb-4">Giám sát hội thoại AI</h2>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Khách hàng</th>
+                        <th>Nhân viên phụ trách</th>
+                        <th>Trạng thái</th>
+                        <th>Cần tư vấn</th>
+                        <th>Thời gian</th>
+                        <th>Tin nhắn gần nhất</th>
+                        <th style="width:120px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            var tinCuoi = item.TinNhanAIs.OrderByDescending(x => x.thoiGianGui).FirstOrDefault();
+
+                            <tr>
+                                <td>@(item.KhachHang?.TenKhachHang ?? "Khách vãng lai")</td>
+                                <td>@(item.NhanVien?.TenNhanVien ?? "Chưa có")</td>
+                                <td>@item.TrangThaiHoiThoai</td>
+                                <td>
+                                    @if (item.CanNhanVienTuVan)
+                                    {
+                                        <span class="badge bg-warning text-dark">Có</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Không</span>
+                                    }
+                                </td>
+                                <td>@item.ThoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@(tinCuoi?.NoiDung ?? "")</td>
+                                <td>
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.IdHoiThoaiAI"
+                                       class="btn btn-info btn-sm">
+                                        Xem
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                Chưa có hội thoại nào.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

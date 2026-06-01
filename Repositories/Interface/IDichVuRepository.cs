@@ -10,5 +10,6 @@ namespace Doantotnghiep.Repositories.Interface
         Task<List<DichVu>> GetAllDichVuAsync(string? searchString);
         Task<DichVu> GetDichVuByIdAsync(int id);
         Task<int> SaveChangesAsync();
+        Task<List<DichVu>> GetDichVusByIdAsync(List<int> id);
     }
 }

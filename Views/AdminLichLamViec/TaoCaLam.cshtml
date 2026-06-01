@@ -1,0 +1,110 @@
+﻿@model Doantotnghiep.Models.Entities.CaLamViec
+
+@{
+    ViewData["Title"] = "Tạo ca làm việc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">Tạo ca làm việc</h2>
+                <p class="text-muted mb-0">
+                    Tạo ca làm để nhân viên có thể đăng ký lịch làm việc.
+                </p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin ca làm</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="TaoCaLam" asp-controller="AdminLichLamViec" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="TenCa" class="form-label fw-semibold">Tên ca</label>
+                            <input asp-for="TenCa"
+                                   class="form-control"
+                                   placeholder="Ví dụ: Ca sáng, Ca chiều, Ca tối..." />
+                            <span asp-validation-for="TenCa" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NgayLam" class="form-label fw-semibold">Ngày làm</label>
+                            <input asp-for="NgayLam"
+                                   type="date"
+                                   class="form-control" />
+                            <span asp-validation-for="NgayLam" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioBatDau" class="form-label fw-semibold">Giờ bắt đầu</label>
+                                <input asp-for="GioBatDau"
+                                       type="time"
+                                       class="form-control" />
+                                <span asp-validation-for="GioBatDau" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioKetThuc" class="form-label fw-semibold">Giờ kết thúc</label>
+                                <input asp-for="GioKetThuc"
+                                       type="time"
+                                       class="form-control" />
+                                <span asp-validation-for="GioKetThuc" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="SoLuongNhanVienToiDa" class="form-label fw-semibold">
+                                Số lượng nhân viên tối đa
+                            </label>
+                            <input asp-for="SoLuongNhanVienToiDa"
+                                   type="number"
+                                   min="1"
+                                   class="form-control"
+                                   placeholder="Ví dụ: 3, 5, 10..." />
+                            <span asp-validation-for="SoLuongNhanVienToiDa" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            <input asp-for="MoDangKy" class="form-check-input" />
+                            <label asp-for="MoDangKy" class="form-check-label fw-semibold">
+                                Mở đăng ký cho nhân viên
+                            </label>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="DanhSachCaLam"
+                               asp-controller="AdminLichLamViec"
+                               class="btn btn-outline-secondary">
+                                Quay lại
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Lưu ca làm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 mb-0">
+                Sau khi tạo ca làm, nhân viên sẽ thấy ca này trong danh sách đăng ký nếu trạng thái đang mở.
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

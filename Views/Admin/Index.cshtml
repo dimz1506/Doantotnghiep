@@ -1,0 +1,263 @@
+﻿@using System.Text.Json
+
+@{
+
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var doanhThuNgay = ViewBag.DoanhThuTheoNgay;
+    var doanhThuThang = ViewBag.DoanhThuTheoThang;
+    var dichVuBanChay = ViewBag.DichVuBanChay;
+    var thongKeNhanVien = ViewBag.ThongKeNhanVien;
+}
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <p class="text-muted mb-0">
+            Theo dõi doanh thu, số hóa đơn, dịch vụ bán chạy và doanh thu nhân viên.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-bold">Doanh thu theo ngày</div>
+                <div class="card-body">
+                    <canvas id="chartDoanhThuNgay"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-bold">Doanh thu theo tháng</div>
+                <div class="card-body">
+                    <canvas id="chartDoanhThuThang"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-bold">Dịch vụ bán chạy</div>
+                <div class="card-body">
+                    <canvas id="chartDichVuBanChay"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-bold">Doanh thu theo nhân viên</div>
+                <div class="card-body">
+                    <canvas id="chartNhanVien"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const doanhThuNgay = @Html.Raw(JsonSerializer.Serialize(doanhThuNgay));
+        const doanhThuThang = @Html.Raw(JsonSerializer.Serialize(doanhThuThang));
+        const dichVuBanChay = @Html.Raw(JsonSerializer.Serialize(dichVuBanChay));
+        const thongKeNhanVien = @Html.Raw(JsonSerializer.Serialize(thongKeNhanVien));
+
+        new Chart(document.getElementById('chartDoanhThuNgay'), {
+            type: 'line',
+            data: {
+                labels: doanhThuNgay.map(x => new Date(x.Ngay).toLocaleDateString('vi-VN')),
+                datasets: [
+                    {
+                        label: 'Doanh thu',
+                        data: doanhThuNgay.map(x => x.DoanhThu),
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Số hóa đơn',
+                        data: doanhThuNgay.map(x => x.SoHoaDon),
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Số hóa đơn'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chartDoanhThuThang'), {
+            type: 'line',
+            data: {
+                labels: doanhThuThang.map(x => 'Tháng ' + x.Thang),
+                datasets: [
+                    {
+                        label: 'Doanh thu',
+                        data: doanhThuThang.map(x => x.DoanhThu),
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Số hóa đơn',
+                        data: doanhThuThang.map(x => x.SoHoaDon),
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Số hóa đơn'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chartDichVuBanChay'), {
+            type: 'line',
+            data: {
+                labels: dichVuBanChay.map(x => x.TenDichVu),
+                datasets: [
+                    {
+                        label: 'Số lượng bán',
+                        data: dichVuBanChay.map(x => x.TongSoLuong),
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Doanh thu',
+                        data: dichVuBanChay.map(x => x.DoanhThu),
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Số lượng bán'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chartNhanVien'), {
+            type: 'line',
+            data: {
+                labels: thongKeNhanVien.map(x => x.TenNhanVien),
+                datasets: [
+                    {
+                        label: 'Doanh thu',
+                        data: thongKeNhanVien.map(x => x.DoanhThu),
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Lịch hoàn thành',
+                        data: thongKeNhanVien.map(x => x.LichHoanThanh),
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Tổng lịch phụ trách',
+                        data: thongKeNhanVien.map(x => x.TongLichPhuTrach),
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Số lịch'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

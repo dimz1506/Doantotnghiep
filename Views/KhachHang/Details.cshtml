@@ -1,38 +1,100 @@
 ﻿@model Doantotnghiep.Models.Entities.KhachHang
-@using Doantotnghiep.Models.Enum
 
 @{
-    ViewData["Title"] = "Chi tiết thông tin khach hang";
-   
+    ViewData["Title"] = "Chi tiết thông tin khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h2>Chi tiết thông tin khach hang</h2>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
 
-    <div class="card">
-        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Chi tiết khách hàng</h2>
+                    <p class="text-muted mb-0">
+                        Xem thông tin cá nhân và tài khoản của khách hàng.
+                    </p>
+                </div>
 
-            <p><strong>ID:</strong> @Model.IdKhachHang</p>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    Quay lại
+                </a>
+            </div>
 
-            <p><strong>Tên nhân viên:</strong> @Model.TenKhachHang</p>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Thông tin khách hàng</h5>
+                    <span class="badge bg-light text-dark">#@Model.IdKhachHang</span>
+                </div>
 
-            <p><strong>Địa chỉ:</strong> @Model.DiaChiKhachHang</p>
+                <div class="card-body p-4">
 
-            <p><strong>Ghi Chu:</strong> @Model.GhiChuKH</p>
+                    <div class="mb-3">
+                        <label class="text-muted d-block">Tên khách hàng</label>
+                        <h5 class="fw-bold mb-0">@Model.TenKhachHang</h5>
+                    </div>
 
-            <p><strong>Ngày tạo:</strong> @Model.NgayTaoKH.ToString("dd/MM/yyyy HH:mm")</p>
+                    <div class="mb-3">
+                        <label class="text-muted d-block">Địa chỉ</label>
+                        @if (!string.IsNullOrWhiteSpace(Model.DiaChiKhachHang))
+                        {
+                            <strong>@Model.DiaChiKhachHang</strong>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Chưa có địa chỉ</span>
+                        }
+                    </div>
 
-            @if (User.IsInRole("Admin"))
-            {
-                <p><strong>Tài khoản:</strong> @Model.TaiKhoan?.TenTaiKhoan</p>
-            }
+                    <div class="mb-3">
+                        <label class="text-muted d-block">Ghi chú</label>
+                        @if (!string.IsNullOrWhiteSpace(Model.GhiChuKH))
+                        {
+                            <p class="mb-0">@Model.GhiChuKH</p>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có ghi chú</span>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted d-block">Ngày tạo</label>
+                        <strong>@Model.NgayTaoKH.ToString("dd/MM/yyyy HH:mm")</strong>
+                    </div>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <hr />
+
+                        <div class="mb-0">
+                            <label class="text-muted d-block">Tài khoản liên kết</label>
+                            @if (Model.TaiKhoan != null)
+                            {
+                                <strong>@Model.TaiKhoan.TenTaiKhoan</strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Chưa liên kết tài khoản</span>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="card-footer bg-white d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Quay lại
+                    </a>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.IdKhachHang"
+                       class="btn btn-primary">
+                        Sửa thông tin
+                    </a>
+                </div>
+            </div>
+
         </div>
-    </div>
-
-    <div class="mt-3">
-        <a asp-action="Edit" asp-route-id="@Model.IdKhachHang" class="btn btn-primary">
-            Sửa
-        </a>
-        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
     </div>
 </div>
