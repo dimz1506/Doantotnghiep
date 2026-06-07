@@ -17,5 +17,11 @@ namespace Doantotnghiep.Services.Interfaces
         Task<bool> UpdateDatLichAsync(DatLich datLich);
         Task<List<NhanVien>> GetNhanVienSelectListAsync();
         Task<List<DichVu>> GetDichVuSelectListAsync();
+        Task<List<NhanVien>> GetNhanVienPhuHopAsync(
+    List<int> idDichVus,
+    DateTime ngayHen,
+    DateTime gioBatDau,
+    DateTime gioKetThuc);
+        Task<bool> HuyDatLichAsync(int iddatlich);
     }
 }

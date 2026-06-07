@@ -1,168 +1,145 @@
-﻿@model Doantotnghiep.Models.Entities.NhanVien
+﻿@model Doantotnghiep.Models.ViewModel.EditNhanVienVM
 @using Doantotnghiep.Models.Enum
 
 @{
-    ViewData["Title"] = "Sửa thông tin nhân viên";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Sửa nhân viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-    bool coQuyenSua =
-        User.IsInRole("Admin") ||
-        (
-            User.IsInRole("NhanVien") &&
-            User.Identity != null &&
-            User.Identity.IsAuthenticated &&
-            User.Identity.Name == Model.TaiKhoan?.TenTaiKhoan
-        );
+    var laAdmin = User.IsInRole("Admin");
 }
 
-@if (coQuyenSua)
-{
-    <div class="container mt-4 mb-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="fw-bold mb-1">Sửa thông tin nhân viên</h2>
-                        <p class="text-muted mb-0">
-                            Cập nhật thông tin cá nhân, chuyên môn và trạng thái nhân viên.
-                        </p>
-                    </div>
-
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        Quay lại
-                    </a>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Cập nhật thông tin nhân viên</h5>
                 </div>
 
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Thông tin nhân viên</h5>
-                        <span class="badge bg-light text-dark">#@Model.IdNhanVien</span>
-                    </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
 
-                    <div class="card-body p-4">
-                        <form asp-action="Edit" method="post">
-                            @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="IdNhanVien" />
 
-                            <input type="hidden" asp-for="IdNhanVien" />
-                            <input type="hidden" asp-for="IdTaiKhoan" />
-                            <input type="hidden" asp-for="NgayTaoNV" />
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div class="mb-3">
+                            <label asp-for="TenNhanVien" class="form-label fw-semibold">
+                                Tên nhân viên
+                            </label>
+                            <input asp-for="TenNhanVien" class="form-control" />
+                            <span asp-validation-for="TenNhanVien" class="text-danger"></span>
+                        </div>
 
-                            <div class="mb-3">
-                                <label asp-for="TenNhanVien" class="form-label fw-semibold">
-                                    Tên nhân viên
-                                </label>
+                        <div class="mb-3">
+                            <label asp-for="DiaChiNV" class="form-label fw-semibold">
+                                Địa chỉ
+                            </label>
+                            <input asp-for="DiaChiNV" class="form-control" />
+                            <span asp-validation-for="DiaChiNV" class="text-danger"></span>
+                        </div>
 
-                                <input asp-for="TenNhanVien"
-                                       class="form-control"
-                                       placeholder="Nhập tên nhân viên" />
-
-                                <span asp-validation-for="TenNhanVien" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-3">
-                                <label asp-for="DiaChiNV" class="form-label fw-semibold">
-                                    Địa chỉ
-                                </label>
-
-                                <input asp-for="DiaChiNV"
-                                       class="form-control"
-                                       placeholder="Nhập địa chỉ nhân viên" />
-
-                                <span asp-validation-for="DiaChiNV" class="text-danger"></span>
-                            </div>
+                        @if (laAdmin)
+                        {
+                            <hr />
 
                             <div class="mb-3">
                                 <label asp-for="ChuyenMonNV" class="form-label fw-semibold">
-                                    Chuyên môn
+                                    Chuyên môn chính
                                 </label>
 
-                                <input asp-for="ChuyenMonNV"
-                                       class="form-control"
-                                       placeholder="Ví dụ: Bác sĩ, lễ tân, phụ tá..." />
+                                <select asp-for="ChuyenMonNV" class="form-select">
+                                    <option value="">-- Chọn chuyên môn --</option>
+                                    <option value="ChamSocDa">Chăm sóc da</option>
+                                    <option value="Massage">Massage</option>
+                                    <option value="GoiDau">Gội đầu dưỡng sinh</option>
+                                    <option value="Body">Chăm sóc body</option>
+                                </select>
 
                                 <span asp-validation-for="ChuyenMonNV" class="text-danger"></span>
                             </div>
 
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <div class="mb-3">
-                                    <label asp-for="TrangThaiNV" class="form-label fw-semibold">
-                                        Trạng thái nhân viên
-                                    </label>
-
-                                    <select asp-for="TrangThaiNV"
-                                            class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TrangThaiNhanVien>()">
-                                    </select>
-
-                                    <span asp-validation-for="TrangThaiNV" class="text-danger"></span>
-                                </div>
-                            }
-
                             <div class="mb-3">
-                                <label asp-for="NgayTaoNV" class="form-label fw-semibold">
-                                    Ngày tạo
+                                <label asp-for="IdDichVus" class="form-label fw-semibold">
+                                    Dịch vụ nhân viên phụ trách
                                 </label>
 
-                                <input asp-for="NgayTaoNV"
-                                       class="form-control bg-light"
-                                       readonly />
+                                <select asp-for="IdDichVus"
+                                        asp-items="Model.DichVus"
+                                        class="form-select"
+                                        multiple>
+                                </select>
 
                                 <small class="text-muted">
-                                    Ngày tạo không thể chỉnh sửa.
+                                    Giữ Ctrl để chọn nhiều dịch vụ.
                                 </small>
+
+                                <span asp-validation-for="IdDichVus" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input asp-for="LaNhanVienFullTime" class="form-check-input" />
+                                <label asp-for="LaNhanVienFullTime" class="form-check-label">
+                                    Nhân viên full-time
+                                </label>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="GioBatDauLamViec" class="form-label fw-semibold">
+                                        Giờ bắt đầu làm việc
+                                    </label>
+                                    <input asp-for="GioBatDauLamViec" type="time" class="form-control" />
+                                    <span asp-validation-for="GioBatDauLamViec" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="GioKetThucLamViec" class="form-label fw-semibold">
+                                        Giờ kết thúc làm việc
+                                    </label>
+                                    <input asp-for="GioKetThucLamViec" type="time" class="form-control" />
+                                    <span asp-validation-for="GioKetThucLamViec" class="text-danger"></span>
+                                </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-semibold">
-                                    Tài khoản liên kết
+                                <label asp-for="TrangThaiNV" class="form-label fw-semibold">
+                                    Trạng thái nhân viên
                                 </label>
 
-                                <input value="@Model.TaiKhoan?.TenTaiKhoan"
-                                       class="form-control bg-light"
-                                       readonly />
+                                <select asp-for="TrangThaiNV"
+                                        asp-items="Html.GetEnumSelectList<TrangThaiNhanVien>()"
+                                        class="form-select">
+                                </select>
 
-                                <small class="text-muted">
-                                    Tài khoản đăng nhập gắn với nhân viên này.
-                                </small>
+                                <span asp-validation-for="TrangThaiNV" class="text-danger"></span>
                             </div>
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a asp-action="Index" class="btn btn-outline-secondary">
-                                    Hủy
-                                </a>
-
-                                <button type="submit" class="btn btn-primary px-4">
-                                    Lưu thay đổi
-                                </button>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                Chỉ admin mới có quyền sửa chuyên môn, dịch vụ phụ trách, giờ làm và trạng thái nhân viên.
                             </div>
-                        </form>
-                    </div>
-                </div>
+                        }
 
-                <div class="alert alert-info mt-3 mb-0">
-                    Nhân viên chỉ có thể sửa thông tin của chính mình. Admin có thể sửa trạng thái nhân viên.
-                </div>
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Quay lại
+                            </a>
 
+                            <button type="submit" class="btn btn-primary">
+                                Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="container mt-4">
-        <div class="alert alert-danger">
-            Bạn không có quyền truy cập trang này.
-        </div>
 
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            Quay lại
-        </a>
+        </div>
     </div>
-}
+</div>
 
 @section Scripts {
     @{

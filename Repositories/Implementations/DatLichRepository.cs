@@ -30,6 +30,12 @@ namespace Doantotnghiep.Repositories.Implementations
             {
                 return false;
             }
+
+            if (datlich.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh)
+            {
+                return false;
+            }
+
             datlich.TrangThaiDatLich = trangThailich;
             datlich.NgayCapNhatDatLich = DateTime.Now;
             await _context.SaveChangesAsync();
@@ -78,13 +84,33 @@ namespace Doantotnghiep.Repositories.Implementations
 
         public async Task<bool> UpdateDatLichAsync(DatLich datLich)
         {
+            var datlichCu = await _context.DatLichs.AsNoTracking().FirstOrDefaultAsync(x => x.IdDatLich == datLich.IdDatLich);
+
+            if(datlichCu == null)
+            {
+                return false;
+            }
+            if(datlichCu.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh)
+            {
+                return false;
+            }
+
+            datLich.NgayCapNhatDatLich = DateTime.Now;
+
             _context.DatLichs.Update(datLich);
             await _context.SaveChangesAsync();
+
             return true;
         }
         public async Task<List<NhanVien>> GetNhanVienSelectListAsync()
         {
-            return await _context.NhanViens.Where(nv => nv.TaiKhoan.IdVaiTro == 2).ToListAsync();
+            return await _context.NhanViens
+                .Include(nv => nv.TaiKhoan)
+                .Include(nv => nv.NhanVienDichVus)
+                .Where(nv =>
+                    !nv.IsDeleted &&
+                    nv.TrangThaiNV == TrangThaiNhanVien.DangLamViec)
+                .ToListAsync();
         }
         public async Task<List<DichVu>> GetDichVuSelectListAsync()
         {

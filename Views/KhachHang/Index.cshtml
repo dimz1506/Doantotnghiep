@@ -13,17 +13,6 @@
 }
 
 <div class="admin-page">
-
-    <div class="page-header-card mb-4">
-        <div>
-            <p class="page-eyebrow mb-1">Quản trị khách hàng</p>
-            <h2 class="fw-bold mb-1">Quản lý khách hàng</h2>
-            <p class="text-muted mb-0">
-                Theo dõi thông tin khách hàng, tài khoản và ghi chú chăm sóc khách hàng.
-            </p>
-        </div>
-    </div>
-
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -91,7 +80,7 @@
                         <input type="text"
                                name="searchString"
                                class="form-control form-control-lg"
-                               placeholder="Tìm kiếm khách hàng theo tên, địa chỉ, tài khoản..."
+                               placeholder="Tìm theo tên, mã khách hàng, địa chỉ, ghi chú, tài khoản..."
                                value="@ViewData["CurrentFilter"]" />
                     </div>
 

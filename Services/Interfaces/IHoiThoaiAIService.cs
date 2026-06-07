@@ -11,5 +11,6 @@ namespace Doantotnghiep.Services.Interfaces
         Task TiepNhanAsync(int idHoiThoaiAI, int idNhanVien);
         Task NhanVienTraLoiAsync(int idHoiThoaiAI, int idNhanVien, string noiDung);
         Task KetThucHoiThoaiAsync(int idHoiThoaiAI);
+        Task<List<HoiThoaiAI>> GetLichSuHoiThoaiCuaNhanVienAsync(int idNhanVien);
     }
 }

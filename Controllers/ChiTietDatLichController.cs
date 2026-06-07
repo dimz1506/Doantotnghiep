@@ -22,7 +22,7 @@ namespace Doantotnghiep.Controllers
         }
         private async Task LoadDichVuData(ChiTietDatLichViewModel model)
         {
-            var dichVus = await _dichVuServices.GetAllDichVuAsync(null);
+            var dichVus = await _dichVuServices.GetAllDichVuAsync(null, null);
 
             model.DichVus = dichVus.Select(dv => new SelectListItem
             {

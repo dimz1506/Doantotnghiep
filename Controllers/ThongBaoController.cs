@@ -59,5 +59,20 @@ namespace Doantotnghiep.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [HttpGet]
+        public async Task<IActionResult> SoLuongChuaDoc()
+        {
+            var idKhachHangClaim = User.FindFirst("IdKhachHang")?.Value;
+
+            if (!int.TryParse(idKhachHangClaim, out var idKhachHang))
+            {
+                return Json(new { soLuong = 0 });
+            }
+
+            var soLuong = await _context.ThongBaos
+                .CountAsync(x => x.IdKhachHang == idKhachHang && !x.DaDoc);
+
+            return Json(new { soLuong });
+        }
     }
 }

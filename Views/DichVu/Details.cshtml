@@ -1,151 +1,209 @@
 ﻿@model Doantotnghiep.Models.Entities.DichVu
 
-@{
-    ViewData["Title"] = "Chi tiết dịch vụ";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+@if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+else
+{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="container mt-4 mb-5">
+<div class="service-detail-page">
 
-    <div class="service-detail-hero mb-4">
-        <div class="row align-items-center g-4">
+    <div class="container py-5">
 
-            <div class="col-lg-6">
-                <div class="service-detail-image-wrap">
-                    @if (!string.IsNullOrWhiteSpace(Model.HinhAnhDichVu))
-                    {
-                        <img src="@Model.HinhAnhDichVu"
-                             alt="@Model.TenDichVu"
-                             class="service-detail-image" />
-                    }
-                    else
-                    {
-                        <div class="service-detail-image-empty">
-                            SPA
+        <div class="service-detail-card">
+
+            <div class="row g-0 align-items-stretch">
+
+                <div class="col-lg-6">
+                    <div class="service-image-area">
+                        @if (!string.IsNullOrWhiteSpace(Model.HinhAnhDichVu))
+                        {
+                            <img src="@Model.HinhAnhDichVu"
+                                 alt="@Model.TenDichVu"
+                                 class="service-main-image" />
+                        }
+                        else
+                        {
+                            <div class="service-image-placeholder">
+                                SPA
+                            </div>
+                        }
+
+                        <div class="service-price-tag">
+                            @Model.GiaDichVu.ToString("N0") VNĐ
                         </div>
-                    }
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="service-content-area">
+
+                        <span class="service-label">Dịch vụ spa</span>
+
+                        <h1 class="service-title">
+                            @Model.TenDichVu
+                        </h1>
+
+                        <div class="service-badges">
+                            <span class="service-badge time">
+                                ⏱ @Model.ThoiLuongDV phút
+                            </span>
+
+                            @if (Model.TrangThaiDV)
+                            {
+                                <span class="service-badge active">
+                                    Đang hoạt động
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="service-badge inactive">
+                                    Tạm ngưng
+                                </span>
+                            }
+                        </div>
+
+                        <p class="service-description">
+                            @if (!string.IsNullOrWhiteSpace(Model.MoTaDichVu))
+                            {
+                                @Model.MoTaDichVu
+                            }
+                            else
+                            {
+                                <span>Dịch vụ chăm sóc chuyên nghiệp tại spa, giúp khách hàng thư giãn và cải thiện trải nghiệm chăm sóc bản thân.</span>
+                            }
+                        </p>
+
+                        <div class="service-actions">
+                            @if (!User.IsInRole("Admin") && !User.IsInRole("NhanVien"))
+                            {
+                                <a asp-controller="DatLich"
+                                   asp-action="Create"
+                                   asp-route-idDichVu="@Model.IdDichVu"
+                                   class="btn btn-booking">
+                                    Đặt lịch ngay
+                                </a>
+                            }
+
+                            <a asp-action="Index" class="btn btn-back-service">
+                                Xem dịch vụ khác
+                            </a>
+
+                            @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@Model.IdDichVu"
+                                   class="btn btn-edit-service">
+                                    Sửa dịch vụ
+                                </a>
+
+                                <form asp-action="Delete"
+                                      asp-route-id="@Model.IdDichVu"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Bạn có chắc muốn xóa dịch vụ này không?');">
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit" class="btn btn-delete-service">
+                                        Xóa dịch vụ
+                                    </button>
+                                </form>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row g-4 mt-4">
+
+            <div class="col-md-4">
+                <div class="service-info-box">
+                    <div class="service-info-icon">⏱️</div>
+                    <h5>Thời lượng</h5>
+                    <p>Dịch vụ thực hiện trong khoảng <strong>@Model.ThoiLuongDV phút</strong>.</p>
                 </div>
             </div>
 
-            <div class="col-lg-6">
-                <div class="service-detail-content">
+            <div class="col-md-4">
+                <div class="service-info-box">
+                    <div class="service-info-icon">💆</div>
+                    <h5>Trải nghiệm</h5>
+                    <p>Phù hợp cho khách hàng muốn thư giãn, chăm sóc sắc đẹp và cải thiện tinh thần.</p>
+                </div>
+            </div>
 
-                    <p class="text-uppercase text-primary fw-bold mb-2">
-                        Dịch vụ spa
-                    </p>
-
-                    <h1 class="fw-bold mb-3">
-                        @Model.TenDichVu
-                    </h1>
-
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="badge bg-primary px-3 py-2">
-                            @Model.ThoiLuongDV phút
-                        </span>
-
-                        @if (Model.TrangThaiDV)
-                        {
-                            <span class="badge bg-success px-3 py-2">
-                                Đang hoạt động
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary px-3 py-2">
-                                Tạm ngưng
-                            </span>
-                        }
-                    </div>
-
-                    <div class="service-detail-price mb-4">
-                        @Model.GiaDichVu.ToString("N0") VNĐ
-                    </div>
-
-                    <p class="text-muted service-detail-desc">
-                        @if (!string.IsNullOrWhiteSpace(Model.MoTaDichVu))
-                        {
-                            @Model.MoTaDichVu
-                        }
-                        else
-                        {
-                            <span>Dịch vụ chăm sóc chuyên nghiệp tại spa, giúp khách hàng thư giãn và cải thiện trải nghiệm chăm sóc bản thân.</span>
-                        }
-                    </p>
-
-                    <div class="d-flex flex-wrap gap-2 mt-4">
-                        @if (!User.IsInRole("Admin") && !User.IsInRole("NhanVien"))
-                        {
-                            <a asp-controller="DatLich"
-                               asp-action="Create"
-                               asp-route-idDichVu="@Model.IdDichVu"
-                               class="btn btn-primary btn-lg px-4">
-                                Đặt lịch ngay
-                            </a>
-                        }
-
-                        <a asp-action="Index"
-                           class="btn btn-outline-secondary btn-lg px-4">
-                            Xem dịch vụ khác
-                        </a>
-
-                        @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
-                        {
-                            <a asp-action="Edit"
-                               asp-route-id="@Model.IdDichVu"
-                               class="btn btn-warning btn-lg px-4">
-                                Sửa dịch vụ
-                            </a>
-
-                            <form asp-action="Delete"
-                                  asp-route-id="@Model.IdDichVu"
-                                  method="post"
-                                  class="d-inline"
-                                  onsubmit="return confirm('Bạn có chắc muốn xóa dịch vụ này không?');">
-                                @Html.AntiForgeryToken()
-
-                                <button type="submit" class="btn btn-danger btn-lg px-4">
-                                    Xóa dịch vụ
-                                </button>
-                            </form>
-                        }
-                    </div>
-
+            <div class="col-md-4">
+                <div class="service-info-box">
+                    <div class="service-info-icon">📅</div>
+                    <h5>Đặt lịch</h5>
+                    <p>Khách hàng có thể đặt lịch trực tuyến và theo dõi trạng thái xử lý trên hệ thống.</p>
                 </div>
             </div>
 
         </div>
-    </div>
 
-    <div class="row g-4">
+        <div class="service-extra-card mt-4">
+            <h3>Thông tin chi tiết dịch vụ</h3>
 
-        <div class="col-md-4">
-            <div class="service-info-box h-100">
-                <div class="service-info-icon">⏱️</div>
-                <h5 class="fw-bold">Thời lượng</h5>
-                <p class="text-muted mb-0">
-                    Dịch vụ thực hiện trong khoảng
-                    <strong>@Model.ThoiLuongDV phút</strong>.
-                </p>
-            </div>
-        </div>
+            <div class="row g-4 mt-2">
 
-        <div class="col-md-4">
-            <div class="service-info-box h-100">
-                <div class="service-info-icon">💆</div>
-                <h5 class="fw-bold">Trải nghiệm</h5>
-                <p class="text-muted mb-0">
-                    Phù hợp cho khách hàng muốn thư giãn, chăm sóc sắc đẹp và cải thiện tinh thần.
-                </p>
-            </div>
-        </div>
+                @if (!string.IsNullOrWhiteSpace(Model.LieuTrinhDichVu))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Liệu trình dịch vụ</h6>
+                            <p>@Model.LieuTrinhDichVu</p>
+                        </div>
+                    </div>
+                }
 
-        <div class="col-md-4">
-            <div class="service-info-box h-100">
-                <div class="service-info-icon">📅</div>
-                <h5 class="fw-bold">Đặt lịch</h5>
-                <p class="text-muted mb-0">
-                    Khách hàng có thể đặt lịch trực tuyến và theo dõi trạng thái xử lý trên hệ thống.
-                </p>
+                @if (!string.IsNullOrWhiteSpace(Model.NguyenLieuSuDung))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Nguyên liệu / sản phẩm sử dụng</h6>
+                            <p>@Model.NguyenLieuSuDung</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.QuyTrinhThucHien))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Quy trình thực hiện</h6>
+                            <p>@Model.QuyTrinhThucHien</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.CongCuSuDung))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Công cụ sử dụng</h6>
+                            <p>@Model.CongCuSuDung</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.LuuYKhachHang))
+                {
+                    <div class="col-12">
+                        <div class="service-detail-item warning">
+                            <h6>Lưu ý cho khách hàng</h6>
+                            <p>@Model.LuuYKhachHang</p>
+                        </div>
+                    </div>
+                }
+
             </div>
         </div>
 

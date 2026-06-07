@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Sửa dịch vụ";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
@@ -20,7 +20,7 @@
                     </div>
 
                     <a asp-action="Index" class="btn btn-outline-secondary">
-                        Quay lại
+                        ← Quay lại danh sách dịch vụ
                     </a>
                 </div>
 
@@ -76,6 +76,61 @@
                                           placeholder="Nhập mô tả dịch vụ"></textarea>
 
                                 <span asp-validation-for="MoTaDichVu" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="LieuTrinhDichVu" class="form-label fw-semibold">
+                                    Liệu trình dịch vụ
+                                </label>
+
+                                <textarea asp-for="LieuTrinhDichVu"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Ví dụ: Làm sạch, massage, chăm sóc chuyên sâu..."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="NguyenLieuSuDung" class="form-label fw-semibold">
+                                    Nguyên liệu / sản phẩm sử dụng
+                                </label>
+
+                                <textarea asp-for="NguyenLieuSuDung"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Ví dụ: tinh dầu, kem dưỡng, serum, mặt nạ..."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="QuyTrinhThucHien" class="form-label fw-semibold">
+                                    Quy trình thực hiện
+                                </label>
+
+                                <textarea asp-for="QuyTrinhThucHien"
+                                          class="form-control"
+                                          rows="4"
+                                          placeholder="Nhập các bước thực hiện dịch vụ"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CongCuSuDung" class="form-label fw-semibold">
+                                    Công cụ sử dụng
+                                </label>
+
+                                <textarea asp-for="CongCuSuDung"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Ví dụ: máy xông hơi, khăn nóng, máy chăm sóc da..."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="LuuYKhachHang" class="form-label fw-semibold">
+                                    Lưu ý cho khách hàng
+                                </label>
+
+                                <textarea asp-for="LuuYKhachHang"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Ví dụ: không dùng khi da kích ứng, nên đặt trước..."></textarea>
                             </div>
 
                             <div class="row">

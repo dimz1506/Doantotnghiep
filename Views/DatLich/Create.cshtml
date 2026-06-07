@@ -1,20 +1,21 @@
 ﻿@model Doantotnghiep.Models.ViewModel.CreateDatLichViewModel
 
 @{
-    ViewData["Title"] = "Tạo đặt lịch";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Danh sách đặt lịch";
+
+    if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_UserLayout.cshtml";
+    }
 }
 
 <div class="container mt-4 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-9 col-lg-8">
-
-            <div class="mb-4">
-                <h2 class="fw-bold mb-1">Tạo đặt lịch</h2>
-                <p class="text-muted mb-0">
-                    Chọn nhân viên, dịch vụ và thời gian hẹn cho khách hàng.
-                </p>
-            </div>
 
             @if (TempData["ErrorMessage"] != null)
             {
@@ -34,45 +35,6 @@
                         @Html.AntiForgeryToken()
 
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                        <div class="mb-3">
-                            <label asp-for="IdNhanVien" class="form-label fw-semibold">
-                                Nhân viên phụ trách
-                            </label>
-
-                            <select asp-for="IdNhanVien"
-                                    asp-items="Model.NhanViens"
-                                    class="form-select">
-                                <option value="">-- Chọn nhân viên --</option>
-                            </select>
-
-                            <span asp-validation-for="IdNhanVien" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="IdDichVu" class="form-label fw-semibold">
-                                Dịch vụ
-                            </label>
-
-                            <select asp-for="IdDichVu"
-                                    class="form-select"
-                                    id="dichVuSelect"
-                                    multiple>
-                                @foreach (var dv in Model.DichVus)
-                                {
-                                    <option value="@dv.Value"
-                                            data-thoiluong="@dv.ThoiLuongDV">
-                                        @dv.Text
-                                    </option>
-                                }
-                            </select>
-
-                            <small class="text-muted">
-                                Giữ phím Ctrl để chọn nhiều dịch vụ.
-                            </small>
-
-                            <span asp-validation-for="IdDichVu" class="text-danger d-block"></span>
-                        </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -104,6 +66,31 @@
                         </div>
 
                         <div class="mb-3">
+                            <label asp-for="IdDichVu" class="form-label fw-semibold">
+                                Dịch vụ
+                            </label>
+
+                            <select asp-for="IdDichVu"
+                                    class="form-select"
+                                    id="dichVuSelect"
+                                    multiple>
+                                @foreach (var dv in Model.DichVus)
+                                {
+                                    <option value="@dv.Value"
+                                            data-thoiluong="@dv.ThoiLuongDV">
+                                        @dv.Text
+                                    </option>
+                                }
+                            </select>
+
+                            <small class="text-muted">
+                                Giữ phím Ctrl để chọn nhiều dịch vụ.
+                            </small>
+
+                            <span asp-validation-for="IdDichVu" class="text-danger d-block"></span>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label fw-semibold">
                                 Giờ dự kiến kết thúc
                             </label>
@@ -113,6 +100,20 @@
                                    id="gioKetThucDuKien"
                                    readonly
                                    placeholder="Tự động tính theo thời lượng dịch vụ" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="IdNhanVien" class="form-label fw-semibold">
+                                Nhân viên phù hợp
+                            </label>
+
+                            <select asp-for="IdNhanVien"
+                                    class="form-select"
+                                    id="nhanVienSelect">
+                                <option value="">-- Chọn ngày, giờ và dịch vụ trước --</option>
+                            </select>
+
+                            <span asp-validation-for="IdNhanVien" class="text-danger"></span>
                         </div>
 
                         <div class="mb-4">
@@ -142,7 +143,7 @@
             </div>
 
             <div class="alert alert-info mt-3 mb-0">
-                Hệ thống sẽ tự tính giờ kết thúc dự kiến dựa trên tổng thời lượng các dịch vụ đã chọn.
+                Hệ thống sẽ tự tính giờ kết thúc và chỉ hiển thị nhân viên phù hợp, còn trống lịch.
             </div>
 
         </div>
@@ -197,21 +198,90 @@
             gioKetThucInput.value = `${ngay}/${thang}/${nam} ${gio}:${phut}`;
         }
 
+        async function taiNhanVienPhuHop() {
+            const ngayHen = document.getElementById('ngayHenLich')?.value;
+            const gioBatDau = document.getElementById('gioBatDau')?.value;
+            const dichVuSelect = document.getElementById('dichVuSelect');
+            const nhanVienSelect = document.getElementById('nhanVienSelect');
+
+            if (!nhanVienSelect) {
+                return;
+            }
+
+            nhanVienSelect.innerHTML = '<option value="">-- Chọn ngày, giờ và dịch vụ trước --</option>';
+
+            if (!ngayHen || !gioBatDau || !dichVuSelect) {
+                return;
+            }
+
+            const selectedDichVus = Array.from(dichVuSelect.selectedOptions)
+                .map(x => x.value);
+
+            if (selectedDichVus.length === 0) {
+                nhanVienSelect.innerHTML = '<option value="">-- Vui lòng chọn dịch vụ --</option>';
+                return;
+            }
+
+            nhanVienSelect.innerHTML = '<option value="">-- Đang kiểm tra nhân viên rảnh... --</option>';
+
+            const query = new URLSearchParams();
+            query.append('ngayHen', ngayHen);
+            query.append('gioBatDau', gioBatDau);
+
+            selectedDichVus.forEach(id => {
+                query.append('idDichVus', id);
+            });
+
+            try {
+                const response = await fetch(`/DatLich/GetNhanVienPhuHop?${query.toString()}`);
+
+                if (!response.ok) {
+                    nhanVienSelect.innerHTML = '<option value="">-- Không tải được nhân viên phù hợp --</option>';
+                    return;
+                }
+
+                const data = await response.json();
+
+                nhanVienSelect.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    nhanVienSelect.innerHTML = '<option value="">-- Không có nhân viên phù hợp/rảnh giờ này --</option>';
+                    return;
+                }
+
+                nhanVienSelect.innerHTML = '<option value="">-- Chọn nhân viên phù hợp --</option>';
+
+                data.forEach(nv => {
+                    const option = document.createElement('option');
+                    option.value = nv.idNhanVien;
+                    option.textContent = `${nv.tenNhanVien} - ${nv.chuyenMonNV}`;
+                    nhanVienSelect.appendChild(option);
+                });
+            } catch (error) {
+                nhanVienSelect.innerHTML = '<option value="">-- Lỗi tải nhân viên phù hợp --</option>';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const dichVuSelect = document.getElementById('dichVuSelect');
             const gioBatDauInput = document.getElementById('gioBatDau');
             const ngayHenInput = document.getElementById('ngayHenLich');
 
+            function capNhat() {
+                tinhGioKetThuc();
+                taiNhanVienPhuHop();
+            }
+
             if (dichVuSelect) {
-                dichVuSelect.addEventListener('change', tinhGioKetThuc);
+                dichVuSelect.addEventListener('change', capNhat);
             }
 
             if (gioBatDauInput) {
-                gioBatDauInput.addEventListener('change', tinhGioKetThuc);
+                gioBatDauInput.addEventListener('change', capNhat);
             }
 
             if (ngayHenInput) {
-                ngayHenInput.addEventListener('change', tinhGioKetThuc);
+                ngayHenInput.addEventListener('change', capNhat);
             }
         });
     </script>

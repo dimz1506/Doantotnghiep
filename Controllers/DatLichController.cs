@@ -17,7 +17,7 @@ namespace Doantotnghiep.Controllers
         private readonly IDichVuServices _dichVuServices;
         private readonly IChiTietDatLichServices _chiTietDatLichServices;
         private readonly IHoaDonService _hoaDonService;
-        public DatLichController(IDatLichServices datLichServices,IChiTietDatLichServices chiTietDatLichServices, IDichVuServices dichVuServices, IHoaDonService hoaDonService)
+        public DatLichController(IDatLichServices datLichServices, IChiTietDatLichServices chiTietDatLichServices, IDichVuServices dichVuServices, IHoaDonService hoaDonService)
         {
             _datLichServices = datLichServices;
             _dichVuServices = dichVuServices;
@@ -68,48 +68,19 @@ namespace Doantotnghiep.Controllers
 
             return Forbid();
         }
-
         [HttpGet]
+        [Authorize(Roles = "Admin,NhanVien,KhachHang")]
         public async Task<IActionResult> Details(int id)
         {
-            var datLichs = await _datLichServices.GetDatLichByIdAsync(id);
-            if (datLichs == null)
+            var datLich = await _datLichServices.GetDatLichByIdAsync(id);
+            if (datLich == null)
             {
                 return NotFound();
             }
-            if (User.IsInRole("Admin"))
-            {
-                return View(datLichs);
-            }
-            else if (User.IsInRole("NhanVien"))
-            {
-                var nhanVienIdClaim = User.FindFirst("IdNhanVien")?.Value;
-                if (string.IsNullOrEmpty(nhanVienIdClaim))
-                {
-                    return Forbid();
-                }
 
-                var nhanVienId = int.Parse(nhanVienIdClaim);
-
-                if (datLichs.IdNhanVien != nhanVienId)
-                {
-                    return Forbid();
-                }
-                
-            }
-            else if (User.IsInRole("KhachHang"))
+            if (!await CoQuyenTruyCapLichAsync(id))
             {
-                var khachHangIdClaim = User.FindFirst("IdKhachHang")?.Value;
-                if (string.IsNullOrEmpty(khachHangIdClaim))
-                {
-                    return Forbid();
-                }
-
-                var khachHangId = int.Parse(khachHangIdClaim);
-                if (datLichs.IdKhachHang != khachHangId)
-                {
-                    return Forbid();
-                }
+                return Forbid();
             }
 
             var chiTietDichVus = await _chiTietDatLichServices.GetByDatLichIdAsync(id);
@@ -118,12 +89,14 @@ namespace Doantotnghiep.Controllers
             ViewBag.ChiTietDichVus = chiTietDichVus;
             ViewBag.HoaDon = hoaDon;
 
-            return View(datLichs);
+            return View(datLich);
         }
+
         [HttpGet]
-        [Authorize(Roles ="KhachHang")]
+        [Authorize(Roles = "KhachHang")]
         public async Task<IActionResult> Create()
         {
+
             var model = new CreateDatLichViewModel
             {
                 NgayHenLich = DateTime.Today
@@ -131,7 +104,7 @@ namespace Doantotnghiep.Controllers
             await LoadCreateData(model);
             return View(model);
         }
-        private async Task LoadCreateData (CreateDatLichViewModel model)
+        private async Task LoadCreateData(CreateDatLichViewModel model)
         {
             var nhanViens = await _datLichServices.GetNhanVienSelectListAsync();
             //lay danh sach dich vu 
@@ -148,9 +121,9 @@ namespace Doantotnghiep.Controllers
                 Text = dv.TenDichVu,
                 ThoiLuongDV = dv.ThoiLuongDV
             });
-            if(model.NgayHenLich == default)
+            if (model.NgayHenLich == default)
             {
-                model.NgayHenLich = DateTime.Today;  
+                model.NgayHenLich = DateTime.Today;
             }
         }
         [HttpPost]
@@ -170,14 +143,20 @@ namespace Doantotnghiep.Controllers
                 {
                     return Forbid();
                 }
-                if(datLich.IdDichVu == null || !datLich.IdDichVu.Any())
+                if (datLich.IdDichVu == null || !datLich.IdDichVu.Any())
                 {
                     ModelState.AddModelError("IdDichVu", "Vui lòng chọn ít nhất một dịch vụ.");
-                    await  LoadCreateData(datLich);
+                    await LoadCreateData(datLich);
+                    return View(datLich);
+                }
+                if (datLich.IdNhanVien <= 0)
+                {
+                    ModelState.AddModelError("IdNhanVien", "Vui lòng chọn nhân viên phù hợp.");
+                    await LoadCreateData(datLich);
                     return View(datLich);
                 }
                 var danhsachDichVu = await _dichVuServices.GetDichVusByIdAsync(datLich.IdDichVu);
-                if(danhsachDichVu == null || !danhsachDichVu.Any())
+                if (danhsachDichVu == null || !danhsachDichVu.Any())
                 {
                     ModelState.AddModelError("", "Danh sach dich vu khong hop le.");
                     await LoadCreateData(datLich);
@@ -205,7 +184,7 @@ namespace Doantotnghiep.Controllers
                     NgayTaoDatLich = DateTime.Now
                 };
                 await _datLichServices.CreateDatLichAsync(datlich1);
-                foreach(var dichvu in danhsachDichVu)
+                foreach (var dichvu in danhsachDichVu)
                 {
                     var chiTiet = new ChiTietDatLich
                     {
@@ -226,83 +205,71 @@ namespace Doantotnghiep.Controllers
                 return View(datLich);
             }
         }
-        [Authorize(Roles = ("Admin,KhachHang"))]
         [HttpGet]
+        [Authorize(Roles = "Admin,KhachHang")]
         public async Task<IActionResult> EditKhachHang(int id)
         {
             var datLich = await _datLichServices.GetDatLichByIdAsync(id);
-            if (datLich == null)
+            if (datLich == null) return NotFound();
+
+            if (User.IsInRole("KhachHang"))
             {
-                return NotFound();
+                var khachHangId = GetCurrentKhachHangId();
+                if (khachHangId == null || datLich.IdKhachHang != khachHangId.Value)
+                    return Forbid();
             }
-            var khachHangIdClaim = User.Claims.FirstOrDefault(c => c.Type == "IdKhachHang")?.Value;
-            if (string.IsNullOrEmpty(khachHangIdClaim))
+            if (datLich.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh || datLich.TrangThaiDatLich == TrangThaiDatLich.DaHuy)
             {
-                return Forbid();
+                TempData["ErrorMessage"] =
+                    "Lịch đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa.";
+
+                return RedirectToAction(nameof(Index));
             }
-            var khachHangId = int.Parse(khachHangIdClaim);
-            //Khach hang chi duoc phep chinh sua dat lich cua minh
-            if (datLich.IdKhachHang != khachHangId)
-            {
-                return Forbid();
-            }
-            var datLichViewModel = new KhachHangDatLichViewModel
+            var model = new KhachHangDatLichViewModel
             {
                 IdDatLich = datLich.IdDatLich,
                 NgayHenLich = datLich.NgayHenLich,
-                GhiChuDatLich = datLich.GhiChuDatLich,
+                GhiChuDatLich = datLich.GhiChuDatLich
             };
-            return View(datLichViewModel);
+
+            return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = ("Admin,KhachHang"))]
-        public async Task<IActionResult> EditKhachHang(int id, KhachHangDatLichViewModel datLich)
+        [Authorize(Roles = "Admin,KhachHang")]
+        public async Task<IActionResult> EditKhachHang(int id, KhachHangDatLichViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (id != model.IdDatLich) return NotFound();
+
+            if (!ModelState.IsValid) return View(model);
+
+            var datLichEntity = await _datLichServices.GetDatLichByIdAsync(model.IdDatLich);
+            if (datLichEntity == null) return NotFound();
+
+            if (User.IsInRole("KhachHang"))
             {
-                return View(datLich);
-            }
-           
-            var khachHangIdClaim = User.Claims.FirstOrDefault(c => c.Type == "IdKhachHang")?.Value;
-            if (string.IsNullOrEmpty(khachHangIdClaim))
-            {
-                return Forbid();
-            }
-            var khachHangId = int.Parse(khachHangIdClaim);
-            if (datLich.IdDatLich != id)
-            {
-                return NotFound();
-            }
-            try
-            {
-                var datLichEntity = await _datLichServices.GetDatLichByIdAsync(datLich.IdDatLich);
-                if (datLichEntity == null)
-                {
-                    return NotFound();
-                }
-                //chi duoc phep chinh sua dat lich cua minh
-                if (datLichEntity.IdKhachHang != khachHangId)
-                {
+                var khachHangId = GetCurrentKhachHangId();
+                if (khachHangId == null || datLichEntity.IdKhachHang != khachHangId.Value)
                     return Forbid();
-                }
-                datLichEntity.NgayHenLich = datLich.NgayHenLich;
-                datLichEntity.GhiChuDatLich = datLich.GhiChuDatLich;
-                var result = await _datLichServices.UpdateDatLichAsync(datLichEntity);
-                if (!result)
-                {
-                    TempData["ErrorMessage"] = "Cập nhật đặt lịch thất bại.";
-                    return View(datLich);
-                }
-                TempData["SuccessMessage"] = "Cập nhật đặt lịch thành công.";
+            }
+            if (datLichEntity.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh || datLichEntity.TrangThaiDatLich == TrangThaiDatLich.DaHuy)
+            {
+                TempData["ErrorMessage"] =
+                    "Lịch đã hoàn thành hoặc đã hủy nên không thể chỉnh sửa.";
+
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Lỗi khi cập nhật đặt lịch: {ex.Message}";
-                return View(datLich);
-            }
+
+            datLichEntity.NgayHenLich = model.NgayHenLich;
+            datLichEntity.GhiChuDatLich = model.GhiChuDatLich;
+
+            await _datLichServices.UpdateDatLichAsync(datLichEntity);
+
+            TempData["SuccessMessage"] = "Cập nhật đặt lịch thành công.";
+            return RedirectToAction(nameof(Index));
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin,NhanVien")]
         public async Task<IActionResult> EditNhanVien(int id)
@@ -312,6 +279,14 @@ namespace Doantotnghiep.Controllers
             {
                 return NotFound();
             }
+            if (datLich.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh || datLich.TrangThaiDatLich == TrangThaiDatLich.DaHuy)
+            {
+                TempData["ErrorMessage"] =
+                    "Lịch đã hoàn thành hoặc đã hủy nên không thể cập nhật.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
             if (User.IsInRole("NhanVien"))
             {
                 var nhanVienIdClaim = User.FindFirst("IdNhanVien")?.Value;
@@ -325,7 +300,7 @@ namespace Doantotnghiep.Controllers
                 {
                     return Forbid();
                 }
-            } 
+            }
             var datLichViewModel = new NhanVienDatLichViewModel
             {
                 IdDatLich = datLich.IdDatLich,
@@ -341,103 +316,200 @@ namespace Doantotnghiep.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,NhanVien")]
-        public async Task<IActionResult> EditNhanVien(int id, NhanVienDatLichViewModel datLich)
+        public async Task<IActionResult> EditNhanVien(int id, NhanVienDatLichViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(datLich);
-            }
-            if(id != datLich.IdDatLich)
-            {
-                return NotFound();
-            }
-            if(User.IsInRole("NhanVien"))
-            {
-                var nhanVienIdClaim = User.FindFirst("IdNhanVien")?.Value;
-                if (string.IsNullOrEmpty(nhanVienIdClaim))
-                {
-                    return Forbid();
-                }
-                var nhanVienId = int.Parse(nhanVienIdClaim);
-                //Nhan vien chi duoc phep chinh sua dat lich cua minh
-                if (datLich.IdNhanVien != nhanVienId)
-                {
-                    return Forbid();
-                }
-            }
+            if (id != model.IdDatLich) return NotFound();
 
+            if (!ModelState.IsValid) return View(model);
 
-            try
+            var datLichEntity = await _datLichServices.GetDatLichByIdAsync(model.IdDatLich);
+            if (datLichEntity == null) return NotFound();
+
+            if (datLichEntity.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh || datLichEntity.TrangThaiDatLich == TrangThaiDatLich.DaHuy)
             {
-                var datLichEntity = await _datLichServices.GetDatLichByIdAsync(datLich.IdDatLich);
-                if (datLichEntity == null)
-                {
-                    return NotFound();
-                }
-               
-                datLichEntity.TrangThaiDatLich = datLich.TrangThaiDatLich;
-                datLichEntity.NgayHenLich = datLich.NgayHenLich;
-                datLichEntity.GhiChuDatLich = datLich.GhiChuDatLich;
-                datLichEntity.GioBatDauDV = datLich.GioBatDauDV;
-                datLichEntity.GioKetThucDV = datLich.GioKetThucDV;
-                var result = await _datLichServices.UpdateDatLichAsync(datLichEntity);
-                if (!result)
-                {
-                    TempData["ErrorMessage"] = "Cập nhật đặt lịch thất bại.";
-                    return View(datLich);
-                }
-                TempData["SuccessMessage"] = "Cập nhật đặt lịch thành công.";
+                TempData["ErrorMessage"] =
+                    "Lịch đã hoàn thành hoặc đã hủy nên không thể cập nhật.";
+
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+
+            if (User.IsInRole("NhanVien"))
             {
-                TempData["ErrorMessage"] = $"Lỗi khi cập nhật đặt lịch: {ex.Message}";
-                return View(datLich);
+                var nhanVienId = GetCurrentNhanVienId();
+                if (nhanVienId == null || datLichEntity.IdNhanVien != nhanVienId.Value)
+                    return Forbid();
             }
+
+            if (User.IsInRole("Admin"))
+            {
+                datLichEntity.IdNhanVien = model.IdNhanVien;
+                datLichEntity.NgayHenLich = model.NgayHenLich;
+                datLichEntity.GioBatDauDV = model.GioBatDauDV;
+                datLichEntity.GioKetThucDV = model.GioKetThucDV;
+            }
+
+            datLichEntity.TrangThaiDatLich = model.TrangThaiDatLich;
+            datLichEntity.GhiChuDatLich = model.GhiChuDatLich;
+
+            await _datLichServices.UpdateDatLichAsync(datLichEntity);
+
+            TempData["SuccessMessage"] = "Cập nhật đặt lịch thành công.";
+            return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,NhanVien")]
         public async Task<IActionResult> UpdateTrangThai(int id, TrangThaiDatLich trangThai)
         {
-            try
+            if (!await CoQuyenTruyCapLichAsync(id))
+                return Forbid();
+
+            var datLich = await _datLichServices.GetDatLichByIdAsync(id);
+
+            if (datLich.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh ||
+                datLich.TrangThaiDatLich == TrangThaiDatLich.DaHuy)
             {
-                var result = await _datLichServices.UpdateTrangThaiAsync(id,trangThai);
-                if (!result)
-                {
-                    TempData["ErrorMessage"] = "Cập nhật trạng thái đặt lịch thất bại.";
-                    return NotFound();
-                }
-                TempData["SuccessMessage"] = "Cập nhật trạng thái đặt lịch thành công.";
+                TempData["ErrorMessage"] =
+                    "Lịch đã hoàn thành hoặc đã hủy nên không thể cập nhật trạng thái.";
+
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Lỗi khi cập nhật trạng thái đặt lịch: {ex.Message}";
-                return RedirectToAction(nameof(Index));
-            }
+
+            await _datLichServices.UpdateTrangThaiAsync(id, trangThai);
+
+            TempData["SuccessMessage"] = "Cập nhật trạng thái thành công.";
+            return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles =("Admin,NhanVien"))]
+        [Authorize(Roles = "Admin,NhanVien")]
         public async Task<IActionResult> Delete(int id)
         {
             try
-            {               
-                var trangthaihuy = await _datLichServices.UpdateTrangThaiAsync(id, TrangThaiDatLich.DaHuy);
-                if (!trangthaihuy)
+            {
+                if (!await CoQuyenTruyCapLichAsync(id))
                 {
-                    TempData["ErrorMessage"] = "Hủy đặt lịch thất bại.";
+                    return Forbid();
+                }
+
+                var datLich = await _datLichServices.GetDatLichByIdAsync(id);
+
+                if (datLich.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh ||
+                    datLich.TrangThaiDatLich == TrangThaiDatLich.DaHuy)
+                {
+                    TempData["ErrorMessage"] =
+                        "Lịch đã hoàn thành hoặc đã hủy nên không thể hủy.";
+
                     return RedirectToAction(nameof(Index));
                 }
+
+                await _datLichServices.HuyDatLichAsync(id);
+
                 TempData["SuccessMessage"] = "Hủy đặt lịch thành công.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Lỗi khi hủy đặt lịch: {ex.Message}";
+                TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "KhachHang")]
+        public async Task<IActionResult> GetNhanVienPhuHop(
+     DateTime ngayHen,
+     string gioBatDau,
+     [FromQuery] List<int> idDichVus)
+        {
+            if (string.IsNullOrWhiteSpace(gioBatDau))
+            {
+                return Json(new List<object>());
+            }
+
+            if (!TimeSpan.TryParse(gioBatDau, out var gio))
+            {
+                return Json(new List<object>());
+            }
+
+            if (idDichVus == null || !idDichVus.Any())
+            {
+                return Json(new List<object>());
+            }
+
+            var dichVus = await _dichVuServices.GetDichVusByIdAsync(idDichVus);
+
+            if (dichVus == null || !dichVus.Any())
+            {
+                return Json(new List<object>());
+            }
+
+            var tongThoiLuong = dichVus.Sum(x => x.ThoiLuongDV);
+
+            var gioBatDauDateTime = ngayHen.Date.Add(gio);
+            var gioKetThucDateTime = gioBatDauDateTime.AddMinutes(tongThoiLuong);
+
+            var nhanViens = await _datLichServices.GetNhanVienPhuHopAsync(
+                idDichVus,
+                ngayHen,
+                gioBatDauDateTime,
+                gioKetThucDateTime
+            );
+
+            var result = nhanViens.Select(x => new
+            {
+                idNhanVien = x.IdNhanVien,
+                tenNhanVien = x.TenNhanVien,
+                chuyenMonNV = HienThiChuyenMon(x.ChuyenMonNV)
+            }).ToList();
+
+            return Json(result);
+        }
+        private string HienThiChuyenMon(string? chuyenMon)
+        {
+            return chuyenMon switch
+            {
+                "ChamSocDa" => "Chăm sóc da",
+                "Massage" => "Massage",
+                "GoiDau" => "Gội đầu dưỡng sinh",
+                "Body" => "Chăm sóc body",
+                _ => chuyenMon ?? "Nhân viên spa"
+            };
+        }
+        private int? GetCurrentNhanVienId()
+        {
+            var claim = User.FindFirst("IdNhanVien")?.Value;
+            return int.TryParse(claim, out var id) ? id : null;
+        }
+
+        private int? GetCurrentKhachHangId()
+        {
+            var claim = User.FindFirst("IdKhachHang")?.Value;
+            return int.TryParse(claim, out var id) ? id : null;
+        }
+
+        private async Task<bool> CoQuyenTruyCapLichAsync(int idDatLich)
+        {
+            var datLich = await _datLichServices.GetDatLichByIdAsync(idDatLich);
+            if (datLich == null) return false;
+
+            if (User.IsInRole("Admin")) return true;
+
+            if (User.IsInRole("NhanVien"))
+            {
+                var idNhanVien = GetCurrentNhanVienId();
+                return idNhanVien != null && datLich.IdNhanVien == idNhanVien.Value;
+            }
+
+            if (User.IsInRole("KhachHang"))
+            {
+                var idKhachHang = GetCurrentKhachHangId();
+                return idKhachHang != null && datLich.IdKhachHang == idKhachHang.Value;
+            }
+
+            return false;
         }
     }
 }

@@ -90,6 +90,9 @@ namespace Doantotnghiep.Services.Implementations
             nhanVienDb.DiaChiNV = nhanVien.DiaChiNV;
             nhanVienDb.ChuyenMonNV = nhanVien.ChuyenMonNV;
             nhanVienDb.TrangThaiNV = nhanVien.TrangThaiNV;
+            nhanVienDb.LaNhanVienFullTime = nhanVien.LaNhanVienFullTime;
+            nhanVienDb.GioBatDauLamViec = nhanVien.GioBatDauLamViec;
+            nhanVienDb.GioKetThucLamViec = nhanVien.GioKetThucLamViec;
 
             return await _nhanVienRepository.UpdateNhanVienAsync(nhanVienDb);
         }

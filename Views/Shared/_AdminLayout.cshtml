@@ -23,18 +23,6 @@
         <!-- SIDEBAR -->
         <aside class="admin-sidebar">
 
-            <div class="admin-brand">
-                <a asp-controller="Admin"
-                   asp-action="Index"
-                   class="text-decoration-none text-white d-flex align-items-center gap-2 ajax-admin-link">
-                    <div class="admin-logo">S</div>
-                    <div>
-                        <div class="fw-bold fs-5">Spa Admin</div>
-                        <small class="text-secondary">Quản trị hệ thống</small>
-                    </div>
-                </a>
-            </div>
-
             <nav class="admin-menu">
 
                 @if (User.IsInRole("Admin"))
@@ -131,12 +119,12 @@
                         <span>Quản lý hóa đơn</span>
                     </a>
 
-                    <a class="admin-menu-link ajax-admin-link @(currentController == "AdminLichLamViec" ? "active" : "")"
+                    @* <a class="admin-menu-link ajax-admin-link @(currentController == "AdminLichLamViec" ? "active" : "")"
                        asp-controller="AdminLichLamViec"
                        asp-action="DanhSachLichLam">
                         <span>🕒</span>
                         <span>Quản lý lịch làm việc</span>
-                    </a>
+                    </a> *@
                 }
 
                 @if (User.IsInRole("NhanVien"))
@@ -150,19 +138,19 @@
                         <span>Hội thoại tư vấn</span>
                     </a>
 
-                    <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVienDangKyCa" && currentAction == "Index" ? "active" : "")"
+                    @* <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVienDangKyCa" && currentAction == "Index" ? "active" : "")"
                        asp-controller="NhanVienDangKyCa"
                        asp-action="Index">
                         <span>📝</span>
                         <span>Đăng ký ca làm</span>
-                    </a>
+                    </a> *@
 
-                    <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVienDangKyCa" && currentAction == "LichLamCuaToi" ? "active" : "")"
+                    @* <a class="admin-menu-link ajax-admin-link @(currentController == "NhanVienDangKyCa" && currentAction == "LichLamCuaToi" ? "active" : "")"
                        asp-controller="NhanVienDangKyCa"
                        asp-action="LichLamCuaToi">
                         <span>📌</span>
                         <span>Lịch làm của tôi</span>
-                    </a>
+                    </a> *@
                 }
    
 

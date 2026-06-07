@@ -680,13 +680,20 @@ namespace Doantotnghiep.Services.Implementations
         }
 
         private async Task<NhanVien?> TimNhanVienPhuHopAsync(
-            DichVu dichVu,
-            DateTime ngayHen,
-            DateTime gioBatDau,
-            DateTime gioKetThuc)
+     DichVu dichVu,
+     DateTime ngayHen,
+     DateTime gioBatDau,
+     DateTime gioKetThuc)
         {
             var nhanViens = await _context.NhanViens
-                .Where(x => x.TrangThaiNV == TrangThaiNhanVien.DangLamViec)
+                .Include(x => x.TaiKhoan)
+                    .ThenInclude(x => x.VaiTro)
+                .Where(x =>
+                    x.TrangThaiNV == TrangThaiNhanVien.DangLamViec &&
+                    !x.IsDeleted &&
+                    x.TaiKhoan != null &&
+                    x.TaiKhoan.VaiTro != null &&
+                    x.TaiKhoan.VaiTro.TenVaiTro == "NhanVien")
                 .ToListAsync();
 
             foreach (var nv in nhanViens)
@@ -708,35 +715,35 @@ namespace Doantotnghiep.Services.Implementations
         }
 
         private async Task<bool> KiemTraNhanVienRanhAsync(
-            int idNhanVien,
-            DateTime ngayHen,
-            DateTime gioBatDau,
-            DateTime gioKetThuc)
+     int idNhanVien,
+     DateTime ngayHen,
+     DateTime gioBatDau,
+     DateTime gioKetThuc)
         {
+            var nhanVien = await _context.NhanViens
+                .FirstOrDefaultAsync(x =>
+                    x.IdNhanVien == idNhanVien &&
+                    x.TrangThaiNV == TrangThaiNhanVien.DangLamViec &&
+                    !x.IsDeleted);
+
+            if (nhanVien == null)
+            {
+                return false;
+            }
+
+            if (!nhanVien.LaNhanVienFullTime)
+            {
+                return false;
+            }
+
+            if (gioBatDau.TimeOfDay < nhanVien.GioBatDauLamViec ||
+                gioKetThuc.TimeOfDay > nhanVien.GioKetThucLamViec)
+            {
+                return false;
+            }
+
             var ngayBatDau = ngayHen.Date;
             var ngayKetThuc = ngayHen.Date.AddDays(1);
-
-            var lichLams = await _context.LichLamViecNhanViens
-                .Where(x =>
-                    x.IdNhanVien == idNhanVien &&
-                    x.NgayLamViecNV >= ngayBatDau &&
-                    x.NgayLamViecNV < ngayKetThuc)
-                .ToListAsync();
-
-            if (!lichLams.Any())
-            {
-                return false;
-            }
-
-            var coCaLamPhuHop = lichLams.Any(x =>
-                x.GioBatDauCaLamViecNV.TimeOfDay <= gioBatDau.TimeOfDay &&
-                x.GioKetThucCaLamViecNV.TimeOfDay >= gioKetThuc.TimeOfDay
-            );
-
-            if (!coCaLamPhuHop)
-            {
-                return false;
-            }
 
             var lichDatCungNgay = await _context.DatLichs
                 .Where(x =>

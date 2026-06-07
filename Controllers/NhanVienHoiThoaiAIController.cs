@@ -20,6 +20,7 @@ namespace Doantotnghiep.Controllers
 
             ViewBag.ChoTiepNhan = await _hoiThoaiService.GetHoiThoaiChoNhanVienAsync();
             ViewBag.CuaToi = await _hoiThoaiService.GetHoiThoaiCuaNhanVienAsync(idNhanVien);
+            ViewBag.LichSu = await _hoiThoaiService.GetLichSuHoiThoaiCuaNhanVienAsync(idNhanVien);
 
             return View();
         }

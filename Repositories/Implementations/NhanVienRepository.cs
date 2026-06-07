@@ -31,7 +31,11 @@ namespace Doantotnghiep.Repositories.Implementations
 
         public async Task<NhanVien?> GetNhanVienByIdAsync(int id)
         {
-            return await _context.NhanViens.Include(nv => nv.TaiKhoan).FirstOrDefaultAsync(nv => nv.IdNhanVien == id);
+            return await _context.NhanViens
+                .Include(nv => nv.TaiKhoan)
+                .Include(nv => nv.NhanVienDichVus)
+                    .ThenInclude(nvdv => nvdv.DichVu)
+                .FirstOrDefaultAsync(nv => nv.IdNhanVien == id);
         }
 
         public async Task<NhanVien?> GetNhanVienByTaiKhoanIdAsync(int taiKhoanId)

@@ -18,32 +18,55 @@ namespace Doantotnghiep.Controllers
         public async Task<IActionResult> Index(string? searchString)
         {
             List<KhachHang> khachHangs;
-            if (User.IsInRole("Admin"))
+
+            if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
             {
                 khachHangs = await _khachHangServices.GetAllKhachHangAsync();
-                if (!string.IsNullOrEmpty(searchString))
+
+                if (!string.IsNullOrWhiteSpace(searchString))
                 {
-                    searchString = searchString.ToLower();
-                    khachHangs = khachHangs.Where(nv => nv.TenKhachHang.ToLower().Contains(searchString)).ToList();
+                    var keyword = searchString.Trim().ToLower();
+
+                    khachHangs = khachHangs
+                        .Where(kh =>
+                            kh.TenKhachHang.ToLower().Contains(keyword)
+                            || (!string.IsNullOrWhiteSpace(kh.DiaChiKhachHang)
+                                && kh.DiaChiKhachHang.ToLower().Contains(keyword))
+                            || (!string.IsNullOrWhiteSpace(kh.GhiChuKH)
+                                && kh.GhiChuKH.ToLower().Contains(keyword))
+                            || (kh.TaiKhoan != null
+                                && kh.TaiKhoan.TenTaiKhoan.ToLower().Contains(keyword))
+                            || kh.IdKhachHang.ToString().Contains(keyword)
+                        )
+                        .ToList();
                 }
             }
             else
             {
-                var idTaiKhoanClaim = User.FindFirst("IdTaiKhoan")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(idTaiKhoanClaim) || !int.TryParse(idTaiKhoanClaim, out int idTaiKhoan))
+                var idTaiKhoanClaim =
+                    User.FindFirst("IdTaiKhoan")?.Value
+                    ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(idTaiKhoanClaim) ||
+                    !int.TryParse(idTaiKhoanClaim, out int idTaiKhoan))
                 {
                     return Unauthorized();
                 }
+
                 var khachHang = await _khachHangServices.GetKhachHangByTaiKhoanIdAsync(idTaiKhoan);
+
                 if (khachHang == null)
                 {
                     return NotFound();
                 }
+
                 khachHangs = new List<KhachHang> { khachHang };
             }
+
             ViewData["CurrentFilter"] = searchString;
             return View(khachHangs);
-        }
+        } 
+
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {

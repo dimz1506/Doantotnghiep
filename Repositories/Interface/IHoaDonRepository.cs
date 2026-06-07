@@ -9,5 +9,6 @@ namespace Doantotnghiep.Repositories.Interface
         Task<HoaDon?> GetByIdAsync(int id);
         Task<HoaDon?> GetByDatLichAsync(int idDatLich);
         Task UpdateAsync(HoaDon hoaDon);
+
     }
 }

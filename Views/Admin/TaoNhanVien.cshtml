@@ -75,14 +75,59 @@
                         </div>
 
                         <div class="mb-4">
-                            <label asp-for="ChuyenMonNV" class="form-label">Chuyên môn nhân viên</label>
-                            <input asp-for="ChuyenMonNV" class="form-control" placeholder="Ví dụ: Bác sĩ, lễ tân, phụ tá..." />
+                            <label asp-for="ChuyenMonNV" class="form-label">Chuyên môn chính</label>
+
+                            <select asp-for="ChuyenMonNV" class="form-select">
+                                <option value="">-- Chọn chuyên môn --</option>
+                                <option value="ChamSocDa">Chăm sóc da</option>
+                                <option value="Massage">Massage</option>
+                                <option value="GoiDau">Gội đầu dưỡng sinh</option>
+                                <option value="Body">Chăm sóc body</option>
+                            </select>
+
                             <span asp-validation-for="ChuyenMonNV" class="text-danger"></span>
                         </div>
 
+                        <div class="mb-4">
+                            <label asp-for="IdDichVus" class="form-label fw-semibold">
+                                Dịch vụ nhân viên phụ trách
+                            </label>
+
+                            <select asp-for="IdDichVus"
+                                    asp-items="Model.DichVus"
+                                    class="form-select"
+                                    multiple>
+                            </select>
+
+                            <small class="text-muted">
+                                Giữ Ctrl để chọn nhiều dịch vụ.
+                            </small>
+
+                            <span asp-validation-for="IdDichVus" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="LaNhanVienFullTime" class="form-check-input" />
+                            <label asp-for="LaNhanVienFullTime" class="form-check-label">
+                                Nhân viên full-time
+                            </label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioBatDauLamViec" class="form-label">Giờ bắt đầu làm việc</label>
+                                <input asp-for="GioBatDauLamViec" type="time" class="form-control" />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioKetThucLamViec" class="form-label">Giờ kết thúc làm việc</label>
+                                <input asp-for="GioKetThucLamViec" type="time" class="form-control" />
+                            </div>
+                        </div>
+
                         <div class="d-flex justify-content-between">
-                            <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary">
-                                Quay lại
+                            <a asp-controller="NhanVien" asp-action="Index" class="btn btn-secondary">
+                                Quay lại danh sách nhân viên
                             </a>
 
                             <button type="submit" class="btn btn-primary">

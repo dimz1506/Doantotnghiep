@@ -164,7 +164,7 @@ namespace Doantotnghiep.Services.Implementations
             var result = await _datLichRepository.UpdateDatLichAsync(datLich);
             if (result == false)
             {
-                throw new InvalidOperationException("Cập nhật đặt lịch thất bại.");
+                throw new InvalidOperationException("Lịch đã hoàn thành nên không thể cập nhật hoặc hủy lịch.");
             }
             return true;
         }
@@ -180,7 +180,7 @@ namespace Doantotnghiep.Services.Implementations
             var result = await _datLichRepository.UpdateTrangThaiAsync(iddatlich, trangThailich);
             if (result == false)
             {
-                throw new InvalidOperationException("Cập nhật trạng thái đặt lịch thất bại.");
+                throw new InvalidOperationException("Lịch đã hoàn thành nên không thể cập nhật hoặc hủy lịch.");
             }
             return true;
         }
@@ -194,6 +194,94 @@ namespace Doantotnghiep.Services.Implementations
         {
             var dichVus = await _datLichRepository.GetDichVuSelectListAsync();
             return dichVus;
+        }
+        public async Task<List<NhanVien>> GetNhanVienPhuHopAsync(
+     List<int> idDichVus,
+     DateTime ngayHen,
+     DateTime gioBatDau,
+     DateTime gioKetThuc)
+        {
+            var nhanViens = await _datLichRepository.GetNhanVienSelectListAsync();
+
+            var ketQua = new List<NhanVien>();
+
+            foreach (var nv in nhanViens)
+            {
+                if (nv.NhanVienDichVus == null)
+                {
+                    continue;
+                }
+
+                var dichVuNhanVienPhuTrach = nv.NhanVienDichVus
+                    .Select(x => x.IdDichVu)
+                    .ToList();
+
+                var coTheLamTatCaDichVu = idDichVus
+                    .All(idDichVu => dichVuNhanVienPhuTrach.Contains(idDichVu));
+
+                if (!coTheLamTatCaDichVu)
+                {
+                    continue;
+                }
+
+                if (gioBatDau.TimeOfDay < nv.GioBatDauLamViec ||
+                    gioKetThuc.TimeOfDay > nv.GioKetThucLamViec)
+                {
+                    continue;
+                }
+
+                var trungLich = await _datLichRepository.KiemTraTrungLichAsync(
+                    nv.IdNhanVien,
+                    ngayHen,
+                    gioBatDau,
+                    gioKetThuc,
+                    null
+                );
+
+                if (!trungLich)
+                {
+                    ketQua.Add(nv);
+                }
+            }
+
+            return ketQua;
+        }
+
+        public async Task<bool> HuyDatLichAsync(int iddatlich)
+        {
+            if (iddatlich <= 0)
+            {
+                throw new ArgumentException("Id đặt lịch không hợp lệ.");
+            }
+
+            var datLich = await _datLichRepository.GetDatLichByIdAsync(iddatlich);
+
+            if (datLich == null)
+            {
+                throw new KeyNotFoundException("Không tìm thấy đặt lịch.");
+            }
+
+            if (datLich.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh)
+            {
+                throw new InvalidOperationException("Lịch đã hoàn thành nên không thể hủy.");
+            }
+
+            if (datLich.TrangThaiDatLich == TrangThaiDatLich.DaHuy)
+            {
+                throw new InvalidOperationException("Lịch này đã được hủy trước đó.");
+            }
+
+            var result = await _datLichRepository.UpdateTrangThaiAsync(
+                iddatlich,
+                TrangThaiDatLich.DaHuy
+            );
+
+            if (!result)
+            {
+                throw new InvalidOperationException("Hủy lịch thất bại.");
+            }
+
+            return true;
         }
     }
 }

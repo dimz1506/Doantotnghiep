@@ -17,13 +17,6 @@
 <div class="admin-page">
 
     <div class="page-header-card mb-4">
-        <div>
-            <p class="page-eyebrow mb-1">Quản trị nhân sự</p>
-            <h2 class="fw-bold mb-1">Quản lý nhân viên</h2>
-            <p class="text-muted mb-0">
-                Theo dõi thông tin nhân viên, chuyên môn, tài khoản và trạng thái làm việc.
-            </p>
-        </div>
 
         @if (isAdmin)
         {
@@ -164,12 +157,31 @@
                                                         : item.TenNhanVien.Trim().Substring(0, 1).ToUpper())
                     </div>
 
+                            
+                            <div class="info-line">
+                                <span class="info-label">💼 Loại</span>
+                                <span class="info-value">
+                                    @(item.LaNhanVienFullTime ? "Nhân viên Full Time" : "Part Time")
+                                </span>
+                            </div>
+
+
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-start gap-2">
                                     <div>
                                         <h5 class="fw-bold mb-1">@item.TenNhanVien</h5>
                                         <p class="text-muted small mb-0">Mã nhân viên: #@item.IdNhanVien</p>
                                     </div>
+
+                                    <div class="info-line">
+                                        <span class="info-label">🕒 Giờ làm</span>
+                                        <span class="info-value">
+                                            @item.GioBatDauLamViec.ToString(@"hh\:mm")
+                                            -
+                                            @item.GioKetThucLamViec.ToString(@"hh\:mm")
+                                        </span>
+                                    </div>
+
 
                             @if (item.TrangThaiNV == TrangThaiNhanVien.DangLamViec)
                                     {
@@ -194,7 +206,18 @@
                             <div class="info-line">
                                 <span class="info-label">💆 Chuyên môn</span>
                                 <span class="info-value">
-                                    @(string.IsNullOrWhiteSpace(item.ChuyenMonNV) ? "Chưa có chuyên môn" : item.ChuyenMonNV)
+                                    @{
+                                        var tenChuyenMon = item.ChuyenMonNV switch
+                                        {
+                                            "ChamSocDa" => "Chăm sóc da",
+                                            "Massage" => "Massage thư giãn",
+                                            "GoiDau" => "Gội đầu dưỡng sinh",
+                                            "Body" => "Chăm sóc body",
+                                            _ => item.ChuyenMonNV
+                                        };
+                                    }
+
+                                    @tenChuyenMon
                                 </span>
                             </div>
 

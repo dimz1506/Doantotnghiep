@@ -53,6 +53,18 @@ namespace Doantotnghiep.Services.Implementations
                 .ToListAsync();
         }
 
+        public async Task<List<HoiThoaiAI>> GetLichSuHoiThoaiCuaNhanVienAsync(int idNhanVien)
+        {
+            return await _context.HoiThoaiAIs
+                .Include(x => x.KhachHang)
+                .Include(x => x.NhanVien)
+                .Include(x => x.TinNhanAIs)
+                .Where(x => x.IdNhanVien == idNhanVien
+                         && x.TrangThaiHoiThoai == "DaKetThuc")
+                .OrderByDescending(x => x.ThoiGianKetThuc ?? x.ThoiGianBatDau)
+                .ToListAsync();
+        }
+
         public async Task<List<HoiThoaiAI>> GetTatCaHoiThoaiAsync()
         {
             return await _context.HoiThoaiAIs
@@ -131,14 +143,16 @@ namespace Doantotnghiep.Services.Implementations
             hoiThoai.CanNhanVienTuVan = true;
             hoiThoai.TrangThaiHoiThoai = "DaChuyenNhanVien";
 
+            var nhanVien = await _context.NhanViens
+    .FirstOrDefaultAsync(x => x.IdNhanVien == idNhanVien);
+
             var tinNhanSystem = new TinNhanAI
             {
                 IdHoiThoaiAI = idHoiThoaiAI,
-                VaiTro = "System",
-                NoiDung = "Nhân viên đã tiếp nhận cuộc trò chuyện",
+                VaiTro = "Assistant",
+                NoiDung = $"Nhân viên {(nhanVien?.TenNhanVien ?? "")} đã tiếp nhận cuộc trò chuyện. Anh/chị có thể nhắn trực tiếp tại đây ạ.",
                 thoiGianGui = DateTime.Now
             };
-
             await _context.TinNhanAIs.AddAsync(tinNhanSystem);
             await _context.SaveChangesAsync();
         }
