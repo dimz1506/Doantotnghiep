@@ -1,8 +1,261 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Doantotnghiep.Models.ViewModel.HomeViewModel
+
+@{
+    ViewData["Title"] = "Trang chủ";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4 mb-5">
+
+    <section class="hero-spa mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-7">
+                <p class="text-uppercase text-primary fw-bold mb-2">
+                    Naps Hà Nội Spa
+                </p>
+
+                <h1 class="display-5 fw-bold mb-3">
+                    Thư giãn, làm đẹp và đặt lịch dễ dàng
+                </h1>
+
+                <p class="lead text-muted mb-4">
+                    Trải nghiệm các dịch vụ chăm sóc da, massage, gội đầu dưỡng sinh
+                    và đặt lịch nhanh chóng ngay trên hệ thống.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-controller="DichVu"
+                       asp-action="Index"
+                       class="btn btn-primary btn-lg">
+                        Xem dịch vụ
+                    </a>
+
+                    <a asp-controller="DatLich"
+                       asp-action="Create"
+                       class="btn btn-outline-primary btn-lg">
+                        Đặt lịch ngay
+                    </a>
+
+                    <a asp-controller="Chatbot"
+                       asp-action="Index"
+                       class="btn btn-outline-dark btn-lg">
+                        Tư vấn AI
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-5 mt-4 mt-md-0">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-3">Thông tin spa</h4>
+
+                        <div class="mb-3">
+                            <strong>Địa chỉ</strong>
+                            <p class="text-muted mb-0">
+                                Naps Hà Nội Spa, Hà Nội
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Dịch vụ nổi bật</strong>
+                            <p class="text-muted mb-0">
+                                Chăm sóc da, massage thư giãn, gội đầu dưỡng sinh.
+                            </p>
+                        </div>
+
+                        <div>
+                            <strong>Hỗ trợ thông minh</strong>
+                            <p class="text-muted mb-0">
+                                Chatbot AI tư vấn và hỗ trợ đặt lịch tự động.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Dịch vụ nổi bật</h2>
+            <p class="text-muted">
+                Một số dịch vụ được khách hàng quan tâm tại spa
+            </p>
+        </div>
+
+        <div class="row g-4">
+            @if (Model.DichVuNoiBats != null && Model.DichVuNoiBats.Any())
+            {
+                foreach (var item in Model.DichVuNoiBats)
+                {
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card service-home-card border-0 shadow-sm h-100">
+
+                            <div class="service-home-img-wrap">
+                                @if (!string.IsNullOrWhiteSpace(item.HinhAnhDichVu))
+                                {
+                                    <img src="@item.HinhAnhDichVu"
+                                         class="service-home-img"
+                                         alt="@item.TenDichVu" />
+                                }
+                                else
+                                {
+                                    <div class="service-home-img service-home-img-empty">
+                                        Spa
+                                    </div>
+                                }
+
+                        <div class="service-home-overlay">
+                            <h5 class="fw-bold text-white mb-2">
+                                @item.TenDichVu
+                            </h5>
+
+                            <p class="text-white-50 mb-2">
+                                @item.ThoiLuongDV phút | @item.GiaDichVu.ToString("N0") VNĐ
+                            </p>
+
+                            <p class="text-white small mb-3">
+                                @(string.IsNullOrWhiteSpace(item.MoTaDichVu)
+                                                                ? "Dịch vụ chăm sóc chuyên nghiệp tại spa."
+                                                                : item.MoTaDichVu.Length > 80
+                                                                ? item.MoTaDichVu.Substring(0, 80) + "..."
+                                                                : item.MoTaDichVu)
+                            </p>
+
+                                    <a asp-controller="DatLich"
+                                       asp-action="Create"
+                                       class="btn btn-light btn-sm rounded-pill px-4">
+                                        Đặt ngay
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                        }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        Hiện chưa có dịch vụ để hiển thị.
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="DichVu"
+               asp-action="Index"
+               class="btn btn-outline-primary px-4">
+                Xem tất cả dịch vụ
+            </a>
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Tiện ích hệ thống</h2>
+            <p class="text-muted">
+                Các thao tác thường dùng khi đặt lịch dịch vụ
+            </p>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4 text-center">
+                        <div class="fs-1 mb-3">📅</div>
+
+                        <h5 class="fw-bold">Đặt lịch</h5>
+
+                        <p class="text-muted">
+                            Tạo lịch hẹn mới với dịch vụ và thời gian mong muốn.
+                        </p>
+
+                        <a asp-controller="DatLich"
+                           asp-action="Create"
+                           class="btn btn-outline-primary">
+                            Đặt lịch
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4 text-center">
+                        <div class="fs-1 mb-3">🕒</div>
+
+                        <h5 class="fw-bold">Theo dõi lịch</h5>
+
+                        <p class="text-muted">
+                            Kiểm tra lịch đặt và trạng thái xử lý của lịch hẹn.
+                        </p>
+
+                        <a asp-controller="DatLich"
+                           asp-action="Index"
+                           class="btn btn-outline-primary">
+                            Lịch của tôi
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4 text-center">
+                        <div class="fs-1 mb-3">🤖</div>
+
+                        <h5 class="fw-bold">Trợ lý AI</h5>
+
+                        <p class="text-muted">
+                            Tư vấn dịch vụ và hỗ trợ đặt lịch tự động.
+                        </p>
+
+                        <a asp-controller="Chatbot"
+                           asp-action="Index"
+                           class="btn btn-outline-primary">
+                            Chat ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("NhanVien"))
+    {
+        <section>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <h4 class="fw-bold mb-1">Khu vực nhân viên</h4>
+                            <p class="text-muted mb-0">
+                                Đăng ký ca làm và xem lịch làm chính thức của bạn.
+                            </p>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a asp-controller="NhanVienDangKyCa"
+                               asp-action="Index"
+                               class="btn btn-primary">
+                                Đăng ký ca
+                            </a>
+
+                            <a asp-controller="NhanVienDangKyCa"
+                               asp-action="LichLamCuaToi"
+                               class="btn btn-outline-success">
+                                Lịch làm của tôi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
 </div>

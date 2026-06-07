@@ -19,7 +19,6 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Models\RequestModel\" />
-    <Folder Include="Views\NhanVien\" />
     <Folder Include="wwwroot\images\dichvu\" />
   </ItemGroup>
 

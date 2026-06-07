@@ -1,0 +1,229 @@
+﻿@model IEnumerable<Doantotnghiep.Models.Entities.KhachHang>
+
+@{
+    ViewData["Title"] = "Quản lý khách hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    bool isAdminOrNV = User.IsInRole("Admin") || User.IsInRole("NhanVien");
+
+    var tongKhachHang = Model != null ? Model.Count() : 0;
+    var coTaiKhoan = Model != null ? Model.Count(x => x.TaiKhoan != null) : 0;
+    var coDiaChi = Model != null ? Model.Count(x => !string.IsNullOrWhiteSpace(x.DiaChiKhachHang)) : 0;
+    var coGhiChu = Model != null ? Model.Count(x => !string.IsNullOrWhiteSpace(x.GhiChuKH)) : 0;
+}
+
+<div class="admin-page">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary-subtle text-primary">👥</div>
+                <div>
+                    <p class="text-muted mb-1">Tổng khách hàng</p>
+                    <h3 class="fw-bold mb-0">@tongKhachHang</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-info-subtle text-info">🔐</div>
+                <div>
+                    <p class="text-muted mb-1">Có tài khoản</p>
+                    <h3 class="fw-bold mb-0">@coTaiKhoan</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-success-subtle text-success">📍</div>
+                <div>
+                    <p class="text-muted mb-1">Có địa chỉ</p>
+                    <h3 class="fw-bold mb-0">@coDiaChi</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-warning-subtle text-warning">📝</div>
+                <div>
+                    <p class="text-muted mb-1">Có ghi chú</p>
+                    <h3 class="fw-bold mb-0">@coGhiChu</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (isAdminOrNV)
+    {
+        <div class="filter-card mb-4">
+            <form method="get">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-9">
+                        <input type="text"
+                               name="searchString"
+                               class="form-control form-control-lg"
+                               placeholder="Tìm theo tên, mã khách hàng, địa chỉ, ghi chú, tài khoản..."
+                               value="@ViewData["CurrentFilter"]" />
+                    </div>
+
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                            Tìm kiếm
+                        </button>
+
+                        @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"] as string))
+                        {
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                Xóa
+                            </a>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    }
+
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h5 class="fw-bold mb-1">Danh sách khách hàng</h5>
+                <p class="text-muted mb-0">
+                    Danh sách khách hàng hiện có trong hệ thống.
+                </p>
+            </div>
+
+            <span class="badge bg-dark px-3 py-2">
+                Tổng: @tongKhachHang
+            </span>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h5 class="fw-bold">Không có khách hàng nào</h5>
+                <p class="text-muted mb-0">
+                    Hiện chưa có dữ liệu khách hàng phù hợp.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="customer-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="customer-card">
+                        <div class="customer-top">
+                            <div class="customer-avatar">
+                                @(string.IsNullOrWhiteSpace(item.TenKhachHang)
+                                                        ? "K"
+                                                        : item.TenKhachHang.Trim().Substring(0, 1).ToUpper())
+                    </div>
+
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">@item.TenKhachHang</h5>
+                                        <p class="text-muted small mb-0">Mã khách hàng: #@item.IdKhachHang</p>
+                                    </div>
+
+                            @if (item.TaiKhoan != null)
+                                    {
+                                        <span class="badge bg-info text-dark">
+                                            Có tài khoản
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            Chưa có TK
+                                        </span>
+                                    }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="customer-info">
+                        <div class="info-line">
+                            <span class="info-label">📍 Địa chỉ</span>
+                            <span class="info-value">
+                                @(string.IsNullOrWhiteSpace(item.DiaChiKhachHang)
+                                                            ? "Chưa có địa chỉ"
+                                                            : item.DiaChiKhachHang)
+                                                                               </span>
+                                                                           </div>
+
+                        <div class="info-line">
+                            <span class="info-label">📝 Ghi chú</span>
+                            <span class="info-value">
+                                @(string.IsNullOrWhiteSpace(item.GhiChuKH)
+                                                            ? "Không có ghi chú"
+                                                            : item.GhiChuKH)
+                        </span>
+                    </div>
+
+                    @if (isAdminOrNV)
+                            {
+                                <div class="info-line">
+                                    <span class="info-label">📅 Ngày tạo</span>
+                                    <span class="info-value">
+                                        @item.NgayTaoKH.ToString("dd/MM/yyyy HH:mm")
+                                    </span>
+                                </div>
+
+                                <div class="info-line">
+                                    <span class="info-label">🔐 Tài khoản</span>
+                                    <span class="info-value">
+                                        @if (item.TaiKhoan != null)
+                                        {
+                                            <span class="badge bg-light text-dark border">
+                                                @item.TaiKhoan.TenTaiKhoan
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Chưa có</span>
+                                        }
+                                    </span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="customer-actions">
+                            <a asp-action="Details"
+                               asp-route-id="@item.IdKhachHang"
+                               class="btn btn-outline-primary flex-fill">
+                                Chi tiết
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@item.IdKhachHang"
+                               class="btn btn-primary flex-fill">
+                                Sửa
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+</div>

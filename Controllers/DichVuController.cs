@@ -18,12 +18,32 @@ namespace Doantotnghiep.Controllers
         }
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string? searchString)
+        public async Task<IActionResult> Index(string? searchString, int? idLoaiDichVu)
         {
-            var dichVus = await _dichVuServices.GetAllDichVuAsync(searchString);
+            var dichVus = await _dichVuServices.GetAllDichVuAsync(searchString, idLoaiDichVu);
+
             ViewBag.SearchString = searchString;
+            ViewBag.IdLoaiDichVu = idLoaiDichVu;
+
+            var loaiDichVus = await _loaiDichVuServices.GetAllLoaiDichVuAsync(null);
+            ViewBag.LoaiDichVus = new SelectList(
+                loaiDichVus,
+                "IdLoaiDichVu",
+                "TenLoaiDichVu",
+                idLoaiDichVu
+            );
+
+            var idKhachHang = GetIdKhachHang();
+
+            if (idKhachHang.HasValue)
+            {
+                ViewBag.DichVuKhachDatNhieu =
+                    await _dichVuServices.GetDichVuKhachDatNhieuAsync(idKhachHang.Value);
+            }
+
             return View(dichVus);
         }
+        
         [HttpGet]
         [Authorize(Roles = "Admin,NhanVien")]
         public async Task<IActionResult> Create()
@@ -158,6 +178,17 @@ namespace Doantotnghiep.Controllers
                 return NotFound();
             }
             return View(dichVu);
+        }
+        private int? GetIdKhachHang()
+        {
+            var claim = User.FindFirst("IdKhachHang")?.Value;
+
+            if (int.TryParse(claim, out var idKhachHang))
+            {
+                return idKhachHang;
+            }
+
+            return null;
         }
     }
 }

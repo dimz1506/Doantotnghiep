@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Doantotnghiep.Models.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace Doantotnghiep.Models.Entities
 {
@@ -15,18 +16,18 @@ namespace Doantotnghiep.Models.Entities
         [Required]
         public DateTime NgayKetThuc { get; set; }
         [Required]
-        public decimal PhanTramGiamGia { get; set; }
+        public LoaiKhuyenMai LoaiKhuyenMai { get; set; } = LoaiKhuyenMai.GiamTheoPhanTram;
+        [Required]
+        public decimal GiaTriGiam { get; set; }
         [Required]
         public bool TrangThaiKhuyenMai { get; set; }
         [Required]
         public DateTime NgayTaoKhuyenMai { get; set; } = DateTime.Now;
-        [Required]
-        public DateTime NgayCapNhatKhuyenMai { get; set; }
+        public DateTime? NgayCapNhatKhuyenMai { get; set; }
         [Required]
         public bool IsDeleted { get; set; } = false;
-        [Required]
         public DateTime? NgayXoaKhuyenMai { get; set; }
-        public ICollection<DichVuKhuyenMai> DichVuKhuyenMais { get; set; }
-        public ICollection<ChiTietHoaDon>  ChiTietHoaDons { get; set; }
+        public ICollection<DichVuKhuyenMai> DichVuKhuyenMais { get; set; } = new List<DichVuKhuyenMai>();
+        public ICollection<ChiTietHoaDon>  ChiTietHoaDons { get; set; } = new List<ChiTietHoaDon>();
     }
 }

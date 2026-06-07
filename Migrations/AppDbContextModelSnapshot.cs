@@ -74,6 +74,9 @@ namespace Doantotnghiep.Migrations
                     b.Property<int>("SoLuongDV")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("TienGiam")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("IdChiTietHoaDon");
 
                     b.HasIndex("IdDichVu");
@@ -97,7 +100,6 @@ namespace Doantotnghiep.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("GhiChuDatLich")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("GioBatDauDV")
@@ -106,9 +108,6 @@ namespace Doantotnghiep.Migrations
                     b.Property<DateTime>("GioKetThucDV")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdChiTietDatLich")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdKhachHang")
                         .HasColumnType("int");
 
@@ -116,7 +115,6 @@ namespace Doantotnghiep.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("NgayCapNhatDatLich")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("NgayHenLich")
@@ -131,8 +129,6 @@ namespace Doantotnghiep.Migrations
                     b.HasKey("IdDatLich");
 
                     b.HasIndex("DichVuIdDichVu");
-
-                    b.HasIndex("IdChiTietDatLich");
 
                     b.HasIndex("IdKhachHang");
 
@@ -149,6 +145,9 @@ namespace Doantotnghiep.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDichVu"));
 
+                    b.Property<string>("CongCuSuDung")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("GiaDichVu")
                         .HasColumnType("decimal(18,2)");
 
@@ -162,6 +161,12 @@ namespace Doantotnghiep.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LieuTrinhDichVu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LuuYKhachHang")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MoTaDichVu")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -171,6 +176,12 @@ namespace Doantotnghiep.Migrations
 
                     b.Property<DateTime?>("NgayXoaDV")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("NguyenLieuSuDung")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuyTrinhThucHien")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenDichVu")
                         .IsRequired()
@@ -227,10 +238,9 @@ namespace Doantotnghiep.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("NgayThanhToan")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PhuongThucTT")
+                    b.Property<int?>("PhuongThucTT")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TongTienGiamGia")
@@ -260,35 +270,33 @@ namespace Doantotnghiep.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHoiThoaiAI"));
 
-                    b.Property<int>("IdKhachHang")
+                    b.Property<bool>("CanNhanVienTuVan")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GhiChuNoiBo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("IdKhachHang")
                         .HasColumnType("int");
 
                     b.Property<int?>("IdNhanVien")
-                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int?>("NhanVienIdNhanVien")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NoiDungHoiThoai")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoiDungTraLoi")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ThoiGianHoiThoai")
+                    b.Property<DateTime>("ThoiGianBatDau")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("TrangThaiChuyenNV")
-                        .HasColumnType("bit");
+                    b.Property<DateTime?>("ThoiGianKetThuc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TrangThaiHoiThoai")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdHoiThoaiAI");
 
                     b.HasIndex("IdKhachHang");
 
-                    b.HasIndex("NhanVienIdNhanVien");
+                    b.HasIndex("IdNhanVien");
 
                     b.ToTable("HoiThoaiAIs");
                 });
@@ -341,8 +349,14 @@ namespace Doantotnghiep.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdKhuyenMai"));
 
+                    b.Property<decimal>("GiaTriGiam")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("LoaiKhuyenMai")
+                        .HasColumnType("int");
 
                     b.Property<string>("MoTaKhuyenMai")
                         .IsRequired()
@@ -351,7 +365,7 @@ namespace Doantotnghiep.Migrations
                     b.Property<DateTime>("NgayBatDau")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("NgayCapNhatKhuyenMai")
+                    b.Property<DateTime?>("NgayCapNhatKhuyenMai")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("NgayKetThuc")
@@ -361,11 +375,7 @@ namespace Doantotnghiep.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("NgayXoaKhuyenMai")
-                        .IsRequired()
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("PhanTramGiamGia")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TenKhuyenMai")
                         .IsRequired()
@@ -377,36 +387,6 @@ namespace Doantotnghiep.Migrations
                     b.HasKey("IdKhuyenMai");
 
                     b.ToTable("KhuyenMais");
-                });
-
-            modelBuilder.Entity("Doantotnghiep.Models.Entities.LichLamViecNhanVien", b =>
-                {
-                    b.Property<int>("IdLichLamViecNhanVien")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLichLamViecNhanVien"));
-
-                    b.Property<DateTime>("GioBatDauCaLamViecNV")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("GioKetThucCaLamViecNV")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdNhanVien")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("NgayLamViecNV")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("TrangThaiLichLamViecNV")
-                        .HasColumnType("bit");
-
-                    b.HasKey("IdLichLamViecNhanVien");
-
-                    b.HasIndex("IdNhanVien");
-
-                    b.ToTable("LichLamViecNhanViens");
                 });
 
             modelBuilder.Entity("Doantotnghiep.Models.Entities.LoaiDichVu", b =>
@@ -444,9 +424,20 @@ namespace Doantotnghiep.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLoaiTriThuc"));
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MoTaLoaiTriThuc")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("NgayCapNhatLoaiTriThuc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("NgayTaoLoaiTriThuc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayXoaLoaiTriThuc")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("TenLoaiTriThuc")
                         .IsRequired()
@@ -473,10 +464,19 @@ namespace Doantotnghiep.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<TimeSpan>("GioBatDauLamViec")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("GioKetThucLamViec")
+                        .HasColumnType("time");
+
                     b.Property<int>("IdTaiKhoan")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LaNhanVienFullTime")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("NgayTaoNV")
@@ -575,6 +575,75 @@ namespace Doantotnghiep.Migrations
                     b.ToTable("TaiKhoans");
                 });
 
+            modelBuilder.Entity("Doantotnghiep.Models.Entities.ThongBao", b =>
+                {
+                    b.Property<int>("IdThongBao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdThongBao"));
+
+                    b.Property<bool>("DaDoc")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("DuongDan")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("IdKhachHang")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdNhanVien")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NoiDung")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TieuDe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdThongBao");
+
+                    b.HasIndex("IdKhachHang");
+
+                    b.HasIndex("IdNhanVien");
+
+                    b.ToTable("ThongBaos");
+                });
+
+            modelBuilder.Entity("Doantotnghiep.Models.Entities.TinNhanAI", b =>
+                {
+                    b.Property<int>("IdTinNhanAI")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTinNhanAI"));
+
+                    b.Property<int>("IdHoiThoaiAI")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NoiDung")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VaiTro")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("thoiGianGui")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("IdTinNhanAI");
+
+                    b.HasIndex("IdHoiThoaiAI");
+
+                    b.ToTable("TinNhanAIs");
+                });
+
             modelBuilder.Entity("Doantotnghiep.Models.Entities.TriThuc", b =>
                 {
                     b.Property<int>("IdTriThuc")
@@ -586,11 +655,16 @@ namespace Doantotnghiep.Migrations
                     b.Property<int>("IdLoaiTriThuc")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("NgayCapNhatTriThuc")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("NgayNhapTriThuc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NgayXoaTriThuc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NoiDungTriThuc")
@@ -599,6 +673,12 @@ namespace Doantotnghiep.Migrations
 
                     b.Property<string>("TenTriThuc")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TrangThaiTriThuc")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TuKhoa")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdTriThuc");
@@ -675,12 +755,6 @@ namespace Doantotnghiep.Migrations
                         .WithMany("DatLiches")
                         .HasForeignKey("DichVuIdDichVu");
 
-                    b.HasOne("Doantotnghiep.Models.Entities.ChiTietDatLich", "ChiTietDatLich")
-                        .WithMany()
-                        .HasForeignKey("IdChiTietDatLich")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Doantotnghiep.Models.Entities.KhachHang", "KhachHang")
                         .WithMany("DatLiches")
                         .HasForeignKey("IdKhachHang")
@@ -692,8 +766,6 @@ namespace Doantotnghiep.Migrations
                         .HasForeignKey("IdNhanVien")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("ChiTietDatLich");
 
                     b.Navigation("KhachHang");
 
@@ -745,13 +817,11 @@ namespace Doantotnghiep.Migrations
                 {
                     b.HasOne("Doantotnghiep.Models.Entities.KhachHang", "KhachHang")
                         .WithMany("HoiThoaiAIs")
-                        .HasForeignKey("IdKhachHang")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdKhachHang");
 
                     b.HasOne("Doantotnghiep.Models.Entities.NhanVien", "NhanVien")
                         .WithMany("HoiThoaiAIs")
-                        .HasForeignKey("NhanVienIdNhanVien");
+                        .HasForeignKey("IdNhanVien");
 
                     b.Navigation("KhachHang");
 
@@ -767,17 +837,6 @@ namespace Doantotnghiep.Migrations
                         .IsRequired();
 
                     b.Navigation("TaiKhoan");
-                });
-
-            modelBuilder.Entity("Doantotnghiep.Models.Entities.LichLamViecNhanVien", b =>
-                {
-                    b.HasOne("Doantotnghiep.Models.Entities.NhanVien", "NhanVien")
-                        .WithMany("LichLamViecNhanViens")
-                        .HasForeignKey("IdNhanVien")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NhanVien");
                 });
 
             modelBuilder.Entity("Doantotnghiep.Models.Entities.NhanVien", b =>
@@ -821,6 +880,32 @@ namespace Doantotnghiep.Migrations
                     b.Navigation("VaiTro");
                 });
 
+            modelBuilder.Entity("Doantotnghiep.Models.Entities.ThongBao", b =>
+                {
+                    b.HasOne("Doantotnghiep.Models.Entities.KhachHang", "KhachHang")
+                        .WithMany()
+                        .HasForeignKey("IdKhachHang");
+
+                    b.HasOne("Doantotnghiep.Models.Entities.NhanVien", "NhanVien")
+                        .WithMany()
+                        .HasForeignKey("IdNhanVien");
+
+                    b.Navigation("KhachHang");
+
+                    b.Navigation("NhanVien");
+                });
+
+            modelBuilder.Entity("Doantotnghiep.Models.Entities.TinNhanAI", b =>
+                {
+                    b.HasOne("Doantotnghiep.Models.Entities.HoiThoaiAI", "HoiThoaiAI")
+                        .WithMany("TinNhanAIs")
+                        .HasForeignKey("IdHoiThoaiAI")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HoiThoaiAI");
+                });
+
             modelBuilder.Entity("Doantotnghiep.Models.Entities.TriThuc", b =>
                 {
                     b.HasOne("Doantotnghiep.Models.Entities.LoaiTriThuc", "LoaiTriThuc")
@@ -857,6 +942,11 @@ namespace Doantotnghiep.Migrations
                     b.Navigation("ChiTietHoaDons");
                 });
 
+            modelBuilder.Entity("Doantotnghiep.Models.Entities.HoiThoaiAI", b =>
+                {
+                    b.Navigation("TinNhanAIs");
+                });
+
             modelBuilder.Entity("Doantotnghiep.Models.Entities.KhachHang", b =>
                 {
                     b.Navigation("DatLiches");
@@ -886,8 +976,6 @@ namespace Doantotnghiep.Migrations
                     b.Navigation("DatLiches");
 
                     b.Navigation("HoiThoaiAIs");
-
-                    b.Navigation("LichLamViecNhanViens");
 
                     b.Navigation("NhanVienDichVus");
                 });

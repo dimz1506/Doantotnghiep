@@ -24,8 +24,12 @@ namespace Doantotnghiep.Models.Entities
         public bool IsDeleted { get; set; } = false;
         public DateTime? NgayXoaNV { get; set; }
         public ICollection<NhanVienDichVu>? NhanVienDichVus { get; set; }
-        public ICollection<LichLamViecNhanVien>? LichLamViecNhanViens { get; set; }
         public ICollection<DatLich>? DatLiches { get; set; }
         public ICollection<HoiThoaiAI>? HoiThoaiAIs { get; set; }
+        public bool LaNhanVienFullTime { get; set; } = true;
+
+        public TimeSpan GioBatDauLamViec { get; set; } = new TimeSpan(8, 0, 0);
+
+        public TimeSpan GioKetThucLamViec { get; set; } = new TimeSpan(17, 0, 0);
     }
 }

@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Spa</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Doantotnghiep.styles.css" asp-append-version="true" />
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary"
+               asp-controller="Home"
+               asp-action="Index">
+                Spa Booking
+            </a>
+
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#userNavbar"
+                    aria-controls="userNavbar"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="userNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="Home"
+                           asp-action="Index">
+                            Trang chủ
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="DichVu"
+                           asp-action="Index">
+                            Dịch vụ
+                        </a>
+                    </li>
+
+                    @if (User.Identity == null || !User.Identity.IsAuthenticated || User.IsInRole("KhachHang"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="DatLich"
+                               asp-action="Create">
+                                Đặt lịch
+                            </a>
+                        </li>
+                    }
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("KhachHang"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="DatLich"
+                               asp-action="Index">
+                                Lịch đặt của tôi
+                            </a>
+                        </li>
+                    }
+
+                    @if (User.Identity == null || !User.Identity.IsAuthenticated || User.IsInRole("KhachHang"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-primary fw-semibold"
+                               asp-controller="Chatbot"
+                               asp-action="Index">
+                                Trợ lý AI
+                            </a>
+                        </li>
+                    }
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("KhachHang"))
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="ThongBao"
+                               asp-action="Index"
+                               class="nav-link position-relative">
+                                🔔 Thông báo
+
+                                <span id="thongBaoBadge"
+                                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                      style="display:none;">
+                                    0
+                                </span>
+                            </a>
+                        </li>
+                    }
+
+                    @* @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("NhanVien"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               href="#"
+                               id="nhanVienDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Nhân viên
+                            </a> *@
+
+                            @* <ul class="dropdown-menu" aria-labelledby="nhanVienDropdown"> *@
+                                @* <li>
+                                    <a class="dropdown-item"
+                                       asp-controller="NhanVien"
+                                       asp-action="Index">
+                                        Thông tin cá nhân
+                                    </a>
+                                </li> *@
+
+                                @* <li>
+                                    <a class="dropdown-item"
+                                       asp-controller="DatLich"
+                                       asp-action="Index">
+                                        Lịch hẹn phụ trách
+                                    </a>
+                                </li> *@
+
+                              @*   <li>
+                                    <a class="dropdown-item text-primary fw-semibold"
+                                       asp-controller="NhanVienHoiThoaiAI"
+                                       asp-action="Index">
+                                        Hội thoại tư vấn
+                                    </a>
+                                </li> *@
+
+                              @*   <li>
+                                    <a class="dropdown-item"
+                                       asp-controller="NhanVienDangKyCa"
+                                       asp-action="Index">
+                                        Đăng ký ca làm
+                                    </a>
+                                </li> *@
+
+                              @*   <li>
+                                    <a class="dropdown-item"
+                                       asp-controller="NhanVienDangKyCa"
+                                       asp-action="LichSuDangKy">
+                                        Lịch sử đăng ký ca
+                                    </a>
+                                </li> *@
+
+                                @* <li>
+                                    <a class="dropdown-item"
+                                       asp-controller="NhanVienDangKyCa"
+                                       asp-action="LichLamCuaToi">
+                                        Lịch làm của tôi
+                                    </a>
+                                </li> *@
+                        @*     </ul>
+                        </li> *@
+                    @* } *@
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("NhanVien"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-success fw-semibold"
+                               asp-controller="NhanVien"
+                               asp-action="Index">
+                                Giao diện vận hành
+                            </a>
+                        </li>
+                    }
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-danger fw-semibold"
+                               asp-controller="Admin"
+                               asp-action="Index">
+                                Trang Admin
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item d-flex align-items-center me-2">
+                            <span class="text-muted">
+                                Xin chào, <strong>@User.Identity.Name</strong>
+                            </span>
+                        </li>
+
+                        <li class="nav-item">
+                            <form asp-controller="Auth"
+                                  asp-action="DangXuat"
+                                  method="post"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    Đăng xuất
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Auth"
+                               asp-action="DangNhap">
+                                Đăng nhập
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="btn btn-primary btn-sm"
+                               asp-controller="Auth"
+                               asp-action="DangKy">
+                                Đăng ký
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="py-4">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top bg-white py-3 mt-4">
+        <div class="container text-center text-muted">
+            © @DateTime.Now.Year - Spa Booking
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+    async function loadSoLuongThongBaoChuaDoc() {
+        const badge = document.getElementById('thongBaoBadge');
+
+        if (!badge) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/ThongBao/SoLuongChuaDoc');
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+            const soLuong = data.soLuong || 0;
+
+            if (soLuong > 0) {
+                badge.innerText = soLuong > 99 ? '99+' : soLuong;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        } catch {
+            badge.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSoLuongThongBaoChuaDoc);
+</script>
+
+</body>
+</html>

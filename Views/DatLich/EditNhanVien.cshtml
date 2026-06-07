@@ -1,0 +1,135 @@
+﻿@model Doantotnghiep.Models.ViewModel.NhanVienDatLichViewModel
+
+@{
+    ViewData["Title"] = "Danh sách đặt lịch";
+
+    if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_UserLayout.cshtml";
+    }
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin lịch hẹn</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="EditNhanVien" asp-route-id="@Model.IdDatLich" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="IdDatLich" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="IdNhanVien" class="form-label fw-semibold">
+                                Mã nhân viên phụ trách
+                            </label>
+
+                            <input asp-for="IdNhanVien"
+                                   class="form-control"
+                                   placeholder="Nhập mã nhân viên" />
+
+                            <span asp-validation-for="IdNhanVien" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TrangThaiDatLich" class="form-label fw-semibold">
+                                Trạng thái đặt lịch
+                            </label>
+
+                            <select asp-for="TrangThaiDatLich"
+                                    class="form-select"
+                                    asp-items="Html.GetEnumSelectList<Doantotnghiep.Models.Enum.TrangThaiDatLich>()">
+                                <option value="">-- Chọn trạng thái --</option>
+                            </select>
+
+                            <span asp-validation-for="TrangThaiDatLich" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NgayHenLich" class="form-label fw-semibold">
+                                Ngày hẹn lịch
+                            </label>
+
+                            <input asp-for="NgayHenLich"
+                                   type="date"
+                                   class="form-control" />
+
+                            <span asp-validation-for="NgayHenLich" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioBatDauDV" class="form-label fw-semibold">
+                                    Giờ bắt đầu dịch vụ
+                                </label>
+
+                                <input asp-for="GioBatDauDV"
+                                       type="datetime-local"
+                                       class="form-control" />
+
+                                <span asp-validation-for="GioBatDauDV" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioKetThucDV" class="form-label fw-semibold">
+                                    Giờ kết thúc dịch vụ
+                                </label>
+
+                                <input asp-for="GioKetThucDV"
+                                       type="datetime-local"
+                                       class="form-control" />
+
+                                <span asp-validation-for="GioKetThucDV" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="GhiChuDatLich" class="form-label fw-semibold">
+                                Ghi chú đặt lịch
+                            </label>
+
+                            <textarea asp-for="GhiChuDatLich"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Nhập ghi chú nếu có..."></textarea>
+
+                            <span asp-validation-for="GhiChuDatLich" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Quay lại
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Cập nhật lịch
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 mb-0">
+                Nhân viên có thể cập nhật trạng thái lịch như đã xác nhận, đang thực hiện, hoàn thành hoặc đã hủy.
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

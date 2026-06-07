@@ -36,43 +36,102 @@ builder.Services.AddScoped<ILoaiDichVuRepository, LoaiDichVuRepository>();
 builder.Services.AddScoped<ILoaiDichVuServices, LoaiDichVuServices>();
 builder.Services.AddScoped<IDichVuRepository, DichVuRepository>();
 builder.Services.AddScoped<IDichVuServices, DichVuServices>();
+builder.Services.AddScoped<INhanVienRepository, NhanVienRepository>();
+builder.Services.AddScoped<INhanVienServices, NhanVienServices>();
+builder.Services.AddScoped<IKhachHangRepository, KhachHangRepository>();
+builder.Services.AddScoped<IKhachHangServices, KhachHangServices>();
+builder.Services.AddScoped<IDatLichRepository, DatLichRepository>();
+builder.Services.AddScoped<IDatLichServices, DatLichServices>();
+builder.Services.AddScoped<IChiTietDatLichRepository, ChiTietDatLichRepository>();
+builder.Services.AddScoped<IChiTietDatLichServices, ChiTietDatLichServices>();
+builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
+builder.Services.AddScoped<IHoaDonService, HoaDonService>();
+builder.Services.AddScoped<IThongKeService, ThongKeService>();
+builder.Services.AddScoped<IKhuyenMaiRepository, KhuyenMaiRepository>();
+builder.Services.AddScoped<IKhuyenMaiService, KhuyeMaiService>();
+builder.Services.AddScoped<ILoaiTriThucRepository, LoaiTriThucRepository>();
+builder.Services.AddScoped<ILoaiTriThucService, LoaiTriThucService>();
+builder.Services.AddScoped<ITriThucRepository, TriThucRepository>();
+builder.Services.AddScoped<ITriThucService, TriThucService>();
+builder.Services.AddScoped<IChatbotAIService, ChatbotAItService>();
+builder.Services.AddScoped<IHoiThoaiAIService, HoiThoaiAIService>();
+builder.Services.AddScoped<IAIAgentDatLichService, AIAgentDatLichService>();
+builder.Services.AddHttpClient<IAdminAIService, AdminAIService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-   var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // Tạo tài khoản admin nếu chưa tồn tại
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    // 1. Tạo vai trò trước
+    if (!context.VaiTros.Any())
+    {
+        context.VaiTros.AddRange(
+            new VaiTro
+            {
+                TenVaiTro = "Admin"
+            },
+            new VaiTro
+            {
+                TenVaiTro = "NhanVien"
+            },
+            new VaiTro
+            {
+                TenVaiTro = "KhachHang"
+            }
+        );
+
+        context.SaveChanges();
+    }
+
+    // 2. Lấy role Admin từ database, không gán cứng IdVaiTro = 1
+    var adminRole = context.VaiTros.FirstOrDefault(x => x.TenVaiTro == "Admin");
+
+    if (adminRole == null)
+    {
+        throw new Exception("Chưa tạo được vai trò Admin.");
+    }
+
+    // 3. Tạo tài khoản admin
     if (!context.TaiKhoans.Any(u => u.TenTaiKhoan == "admin"))
     {
         var salt = Argon2PasswordHelper.GenerateSalt();
-        var hashedPassword = Argon2PasswordHelper.HashPasswordAsync("123456", salt)
-                                .GetAwaiter().GetResult();
+
+        var hashedPassword = Argon2PasswordHelper
+            .HashPasswordAsync("123456", salt)
+            .GetAwaiter()
+            .GetResult();
 
         var adminUser = new TaiKhoan
         {
             TenTaiKhoan = "admin",
             Passwordhash = hashedPassword,
             Salt = salt,
-            IdVaiTro = 1,
+            IdVaiTro = adminRole.IdVaiTro,
             Email = "admin12345@gmail.com",
             SoDienThoai = "0123456789",
             TrangThaiTK = true
         };
 
         context.TaiKhoans.Add(adminUser);
-        context.SaveChanges(); // lưu xong mới lấy Id
+        context.SaveChanges();
 
-        context.NhanViens.Add(new NhanVien
+        var adminNhanVien = new NhanVien
         {
-            IdTaiKhoan = adminUser.IdTaiKhoan,
+            IdTaiKhoan = adminUser.IdTaiKhoan, 
             TenNhanVien = "Admin",
             ChuyenMonNV = "Quản lý",
             DiaChiNV = "Ha Noi - Viet Nam",
-            TrangThaiNV = Doantotnghiep.Models.Enum.TrangThaiNhanVien.DangLamViec
-        });
+            TrangThaiNV = Doantotnghiep.Models.Enum.TrangThaiNhanVien.DangLamViec,
+            NgayTaoNV = DateTime.Now
+        };
+
+        context.NhanViens.Add(adminNhanVien);
         context.SaveChanges();
     }
 }
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

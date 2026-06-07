@@ -1,64 +1,149 @@
 ﻿@using Doantotnghiep.Models.ViewModel
 @model CreateNhanVienVM
+
 @{
-	ViewData["Title"] = "Tạo Nhân Viên";
+    ViewData["Title"] = "Tạo nhân viên";
 }
-@if (User.IsInRole("Admin"))
-{
-	<a href="/Admin/TaoNhanVien">Tạo Nhân Viên</a>
 
-}
-@if (TempData["SuccessMessage"] != null)
-{
-	<div style="color:green">@TempData["SuccessMessage"]</div>
-}
-<div asp-validation-summary="All" style="collor:red"></div>
-<form asp-action="TaoNhanVien" method="post">
-	<div>
-		<label>Ten dang nhap</label>
-		<input asp-for="TenDangNhap" />
-		<span asp-validation-for="TenDangNhap"></span>
-	</div>
-	<div>
-		<label>Email</label>
-		<input asp-for="Email" />
-		<span asp-validation-for="Email"></span>
-	</div>
-	<div>
-		<label>Mat khau</label>
-		<input asp-for="MatKhau" type="password" />
-		<span asp-validation-for="MatKhau"></span>
-	</div>
-	<div>
-		<label>Nhap lai mat khau</label>
-		<input asp-for="XacNhanMatKhau" type="password" />
-		<span asp-validation-for="XacNhanMatKhau"></span>
-	</div>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
 
-	<div>
-		<label>Ten Nhan Vien</label>
-		<input asp-for="TenNhanVien" />
-		<span asp-validation-for="TenNhanVien"></span>
-	</div>
-	<div>
-		<label>So Dien Thoai</label>
-		<input asp-for="SoDienThoai" />
-		<span asp-validation-for="SoDienThoai"></span>
-	</div>
-	<div>
-		<label>Dia Chi Nhan Vien</label>
-		<input asp-for="DiaChiNhanVien" />
-		<span asp-validation-for="DiaChiNhanVien"></span>
-	</div>
-	<div>
-		<label>Chuyen Mon Nhan Vien</label>
-		<input asp-for="ChuyenMonNV" />
-		<span asp-validation-for="ChuyenMonNV"></span>
-	</div>
-	<button type="submit">Tao Nhan Vien</button>
-</form>
-@section Scripts{
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Tạo nhân viên mới</h4>
+                </div>
+
+                <div class="card-body">
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <form asp-action="TaoNhanVien" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="TenDangNhap" class="form-label">Tên đăng nhập</label>
+                            <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập" />
+                            <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="Nhập email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MatKhau" class="form-label">Mật khẩu</label>
+                                <input asp-for="MatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                                <span asp-validation-for="MatKhau" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="XacNhanMatKhau" class="form-label">Nhập lại mật khẩu</label>
+                                <input asp-for="XacNhanMatKhau" type="password" class="form-control" placeholder="Nhập lại mật khẩu" />
+                                <span asp-validation-for="XacNhanMatKhau" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="mb-3">
+                            <label asp-for="TenNhanVien" class="form-label">Tên nhân viên</label>
+                            <input asp-for="TenNhanVien" class="form-control" placeholder="Nhập tên nhân viên" />
+                            <span asp-validation-for="TenNhanVien" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SoDienThoai" class="form-label">Số điện thoại</label>
+                            <input asp-for="SoDienThoai" class="form-control" placeholder="Nhập số điện thoại" />
+                            <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DiaChiNhanVien" class="form-label">Địa chỉ nhân viên</label>
+                            <input asp-for="DiaChiNhanVien" class="form-control" placeholder="Nhập địa chỉ" />
+                            <span asp-validation-for="DiaChiNhanVien" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ChuyenMonNV" class="form-label">Chuyên môn chính</label>
+
+                            <select asp-for="ChuyenMonNV" class="form-select">
+                                <option value="">-- Chọn chuyên môn --</option>
+                                <option value="ChamSocDa">Chăm sóc da</option>
+                                <option value="Massage">Massage</option>
+                                <option value="GoiDau">Gội đầu dưỡng sinh</option>
+                                <option value="Body">Chăm sóc body</option>
+                            </select>
+
+                            <span asp-validation-for="ChuyenMonNV" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="IdDichVus" class="form-label fw-semibold">
+                                Dịch vụ nhân viên phụ trách
+                            </label>
+
+                            <select asp-for="IdDichVus"
+                                    asp-items="Model.DichVus"
+                                    class="form-select"
+                                    multiple>
+                            </select>
+
+                            <small class="text-muted">
+                                Giữ Ctrl để chọn nhiều dịch vụ.
+                            </small>
+
+                            <span asp-validation-for="IdDichVus" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="LaNhanVienFullTime" class="form-check-input" />
+                            <label asp-for="LaNhanVienFullTime" class="form-check-label">
+                                Nhân viên full-time
+                            </label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioBatDauLamViec" class="form-label">Giờ bắt đầu làm việc</label>
+                                <input asp-for="GioBatDauLamViec" type="time" class="form-control" />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioKetThucLamViec" class="form-label">Giờ kết thúc làm việc</label>
+                                <input asp-for="GioKetThucLamViec" type="time" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-controller="NhanVien" asp-action="Index" class="btn btn-secondary">
+                                Quay lại danh sách nhân viên
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                Tạo nhân viên
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

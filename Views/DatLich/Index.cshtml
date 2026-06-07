@@ -1,0 +1,252 @@
+﻿@using Doantotnghiep.Models.Enum
+@model IEnumerable<Doantotnghiep.Models.Entities.DatLich>
+
+@{
+    ViewData["Title"] = "Danh sách đặt lịch";
+
+    if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_UserLayout.cshtml";
+    }
+
+    var sortedBookings = Model?
+        .OrderBy(x =>
+            x.TrangThaiDatLich == TrangThaiDatLich.ChoXacNhan ? 1 :
+            x.TrangThaiDatLich == TrangThaiDatLich.DaXacNhan ? 2 :
+            x.TrangThaiDatLich == TrangThaiDatLich.DangThucHien ? 3 :
+            x.TrangThaiDatLich == TrangThaiDatLich.DaHoanThanh ? 4 : 5)
+        .ThenBy(x => x.NgayHenLich)
+        .ToList();
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-calendar-check-fill text-primary"></i>
+                Quản lý lịch hẹn
+            </h2>
+
+            <p class="text-muted mb-0">
+                Theo dõi và quản lý lịch hẹn Spa
+            </p>
+        </div>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+            Đặt lịch mới
+
+        </a>
+
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="mb-0 fw-bold">
+                Danh sách lịch hẹn
+            </h5>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th width="80">Mã</th>
+                        <th>Khách hàng</th>
+                        <th>Nhân viên</th>
+                        <th>Ngày hẹn</th>
+                        <th>Khung giờ</th>
+                        <th>Ghi chú</th>
+                        <th width="160">Trạng thái</th>
+                        <th width="220">Chức năng</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (sortedBookings != null && sortedBookings.Any())
+                    {
+                        foreach (var item in sortedBookings)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        #@item.IdDatLich
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @item.KhachHang?.TenKhachHang
+                                </td>
+
+                                <td>
+                                    @(item.NhanVien?.TenNhanVien ?? "Chưa phân công")
+                                </td>
+
+                                <td>
+                                    @item.NgayHenLich.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td>
+                                    @item.GioBatDauDV.ToString("HH:mm")
+                                    -
+                                    @item.GioKetThucDV.ToString("HH:mm")
+                                </td>
+
+                                <td>
+
+                                    @if (!string.IsNullOrWhiteSpace(item.GhiChuDatLich))
+                                    {
+                                        @(item.GhiChuDatLich.Length > 50
+                                                                    ? item.GhiChuDatLich.Substring(0, 50) + "..."
+                                                                    : item.GhiChuDatLich)
+                                                        }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            Không có ghi chú
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    @switch (item.TrangThaiDatLich)
+                                    {
+                                        case TrangThaiDatLich.ChoXacNhan:
+                                            <span class="badge bg-warning text-dark">
+                                                Chờ xác nhận
+                                            </span>
+                                            break;
+
+                                        case TrangThaiDatLich.DaXacNhan:
+                                            <span class="badge bg-success">
+                                                Đã xác nhận
+                                            </span>
+                                            break;
+
+                                        case TrangThaiDatLich.DangThucHien:
+                                            <span class="badge bg-info text-dark">
+                                                Đang thực hiện
+                                            </span>
+                                            break;
+
+                                        case TrangThaiDatLich.DaHoanThanh:
+                                            <span class="badge bg-primary">
+                                                Hoàn thành
+                                            </span>
+                                            break;
+
+                                        case TrangThaiDatLich.DaHuy:
+                                            <span class="badge bg-danger">
+                                                Đã hủy
+                                            </span>
+                                            break;
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.IdDatLich"
+                                           class="btn btn-sm btn-primary">
+
+                                            <i class="bi bi-eye"></i>
+                                            Chi tiết
+
+                                        </a>
+
+                                        @if (User.IsInRole("KhachHang")
+                                                                        && item.TrangThaiDatLich == TrangThaiDatLich.ChoXacNhan)
+                                        {
+                                            <a asp-action="EditKhachHang"
+                                               asp-route-id="@item.IdDatLich"
+                                               class="btn btn-sm btn-warning">
+
+                                                <i class="bi bi-pencil"></i>
+                                                Sửa
+
+                                            </a>
+                                        }
+
+                                        @if ((User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+                                                                        && item.TrangThaiDatLich != TrangThaiDatLich.DaHoanThanh
+                                                                        && item.TrangThaiDatLich != TrangThaiDatLich.DaHuy)
+                                        {
+                                            <a asp-action="EditNhanVien"
+                                               asp-route-id="@item.IdDatLich"
+                                               class="btn btn-sm btn-secondary">
+
+                                                <i class="bi bi-gear-fill"></i>
+                                                Xử lý
+
+                                            </a>
+                                        }
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="8" class="text-center py-5">
+
+                                <i class="bi bi-calendar-x display-5 text-muted"></i>
+
+                                <div class="mt-3">
+                                    Chưa có lịch hẹn nào
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

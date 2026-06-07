@@ -1,34 +1,88 @@
 ﻿@model Doantotnghiep.Models.Entities.LoaiDichVu
+
 @{
-	ViewData["Title"] = "Tạo Loại Dịch Vụ";
+    ViewData["Title"] = "Tạo loại dịch vụ";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="container mt-4" style="max-width: 600px;">
-	<h2> Them loai dich vu</h2>
-	<hr/>
-	<form asp-action="Create" method="post">
-		@Html.AntiForgeryToken()
-		<div class="mb-3">
-			<label asp-for="TenLoaiDichVu" class="form-label">Ten loai dich vu</label>
-			<input asp-for="TenLoaiDichVu" class="form-control" placeholder="Nhap ten loai dich vu:" />
-			<span asp-validation-for="TenLoaiDichVu" class="text-danger"></span>
-		</div>
-		<div class="mb-3">
-			<label asp-for="MoTaLoaiDichVu" class="form-label">Mo ta loai dich vu</label>
-			<textarea asp-for="MoTaLoaiDichVu" class="form-control" placeholder="Nhap mo ta loai dich vu:" rows="4"></textarea>
-			<span asp-validation-for="MoTaLoaiDichVu" class="text-danger"></span>
-		</div>
-		<div class="mb-3">
-			<label asp-for="TrangThaiLoaiDV" class="form-label">Trang Thai</label>
-			<select asp-for="TrangThaiLoaiDV" class="form-select">
-				<option value="">-- Chọn trạng thái --</option>
-				<option value="true">Hoạt động</option>
-				<option value="false">Không hoạt động</option>
-			</select>
-		</div>
-		<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-		<div class="d-flex gap-2">
-			<button type="submit" class="btn btn-primary">Luu</button>
-			<a asp-action="Index" class="btn btn-secondary">Hủy</a>
-		</div>
-	</form>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin loại dịch vụ</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="TenLoaiDichVu" class="form-label fw-semibold">
+                                Tên loại dịch vụ
+                            </label>
+
+                            <input asp-for="TenLoaiDichVu"
+                                   class="form-control"
+                                   placeholder="Nhập tên loại dịch vụ" />
+
+                            <span asp-validation-for="TenLoaiDichVu" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MoTaLoaiDichVu" class="form-label fw-semibold">
+                                Mô tả loại dịch vụ
+                            </label>
+
+                            <textarea asp-for="MoTaLoaiDichVu"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Nhập mô tả loại dịch vụ"></textarea>
+
+                            <span asp-validation-for="MoTaLoaiDichVu" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="TrangThaiLoaiDV" class="form-label fw-semibold">
+                                Trạng thái
+                            </label>
+
+                            <select asp-for="TrangThaiLoaiDV" class="form-select">
+                                <option value="">-- Chọn trạng thái --</option>
+                                <option value="true">Hoạt động</option>
+                                <option value="false">Không hoạt động</option>
+                            </select>
+
+                            <span asp-validation-for="TrangThaiLoaiDV" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-controller="LoaiDichVu"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                ← Quay lại quản lý loại dịch vụ
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Lưu loại dịch vụ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 mb-0">
+                Sau khi tạo, loại dịch vụ này có thể được chọn khi thêm dịch vụ mới.
+            </div>
+
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

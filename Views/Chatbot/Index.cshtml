@@ -1,0 +1,113 @@
+﻿@model Doantotnghiep.Models.ViewModel.ChatbotViewModel
+
+@{
+    ViewData["Title"] = "Trợ lý AI";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            </div>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <strong>Cuộc trò chuyện</strong>
+                    <a asp-action="TaoChatMoi" class="btn btn-sm btn-light">
+                        Chat mới
+                    </a>
+                </div>
+
+                <div class="card-body bg-light" style="height: 520px; overflow-y: auto;">
+                    @if (Model.TinNhans != null && Model.TinNhans.Any())
+                    {
+                        @foreach (var tin in Model.TinNhans)
+                        {
+                            if (tin.VaiTro == "User")
+                            {
+                                <div class="d-flex justify-content-end mb-3">
+                                    <div class="bg-primary text-white p-3 rounded-3" style="max-width: 75%;">
+                                        <div>@tin.NoiDung</div>
+                                        <small class="text-white-50">
+                                            @tin.ThoiGianGui.ToString("HH:mm dd/MM")
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                            else if (tin.VaiTro == "NhanVien")
+                            {
+                                <div class="d-flex justify-content-start mb-3">
+                                    <div class="bg-success text-white p-3 rounded-3" style="max-width: 75%; white-space: pre-line;">
+                                        <strong>Nhân viên tư vấn</strong>
+                                        <div class="mt-1">@tin.NoiDung</div>
+                                        <small class="text-white-50">
+                                            @tin.ThoiGianGui.ToString("HH:mm dd/MM")
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                            else if (tin.VaiTro == "Assistant")
+                            {
+                                <div class="d-flex justify-content-start mb-3">
+                                    <div class="bg-white border p-3 rounded-3" style="max-width: 75%; white-space: pre-line;">
+                                        <strong>Trợ lý AI</strong>
+                                        <div class="mt-1">@tin.NoiDung</div>
+                                        <small class="text-muted">
+                                            @tin.ThoiGianGui.ToString("HH:mm dd/MM")
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                            else if (tin.VaiTro == "System")
+                            {
+                                <div class="text-center mb-3">
+                                    <span class="badge bg-secondary">
+                                        @tin.NoiDung
+                                    </span>
+                                </div>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-5">
+                            Hãy bắt đầu cuộc trò chuyện với trợ lý AI.
+                        </div>
+                    }
+                </div>
+
+                <div class="card-footer bg-white">
+                    <form asp-action="GuiTinNhan" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="idHoiThoaiAI" value="@Model.IdHoiThoaiAI" />
+
+                        <div class="input-group">
+                            <input type="text"
+                                   name="cauHoi"
+                                   class="form-control"
+                                   placeholder="Nhập câu hỏi của bạn..."
+                                   autocomplete="off" />
+
+                            <button type="submit" class="btn btn-primary">
+                                Gửi
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            Ví dụ: “Tôi muốn đặt lịch massage chiều mai”, “Spa có chính sách hủy lịch không?”, “Tôi muốn gặp nhân viên tư vấn”.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

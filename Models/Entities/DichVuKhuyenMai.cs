@@ -10,10 +10,10 @@ namespace Doantotnghiep.Models.Entities
         [Required]
         public int IdDichVu { get; set; }
         [ForeignKey(nameof(IdDichVu))]
-        public DichVu DichVu { get; set; }
+        public DichVu? DichVu { get; set; }
         [Required]
         public int IdKhuyenMai { get; set; }
         [ForeignKey(nameof(IdKhuyenMai))]
-        public KhuyenMai KhuyenMai { get; set; }
+        public KhuyenMai? KhuyenMai { get; set; }
     }
 }

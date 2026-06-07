@@ -1,0 +1,199 @@
+﻿@using Doantotnghiep.Models.Entities
+
+@{
+    ViewData["Title"] = "Hội thoại tư vấn";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var choTiepNhan = ViewBag.ChoTiepNhan as List<HoiThoaiAI> ?? new List<HoiThoaiAI>();
+    var cuaToi = ViewBag.CuaToi as List<HoiThoaiAI> ?? new List<HoiThoaiAI>();
+    var lichSu = ViewBag.LichSu as List<HoiThoaiAI> ?? new List<HoiThoaiAI>();
+}
+
+<div class="container-fluid">
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-warning">
+            <strong>Hội thoại chờ tiếp nhận</strong>
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Khách hàng</th>
+                        <th>Thời gian</th>
+                        <th>Tin nhắn gần nhất</th>
+                        <th style="width:190px;">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (choTiepNhan.Any())
+                    {
+                        foreach (var item in choTiepNhan)
+                        {
+                            var tinCuoi = item.TinNhanAIs
+                            .OrderByDescending(x => x.thoiGianGui)
+                            .FirstOrDefault();
+
+                            <tr>
+                                <td>@(item.KhachHang?.TenKhachHang ?? "Khách vãng lai")</td>
+                                <td>@item.ThoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@(tinCuoi?.NoiDung ?? "")</td>
+                                <td>
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.IdHoiThoaiAI"
+                                       class="btn btn-info btn-sm">
+                                        Xem
+                                    </a>
+
+                                    <form asp-action="TiepNhan"
+                                          asp-route-id="@item.IdHoiThoaiAI"
+                                          method="post"
+                                          class="d-inline">
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            Tiếp nhận
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                Không có hội thoại chờ tiếp nhận.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <strong>Hội thoại tôi đang phụ trách</strong>
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Khách hàng</th>
+                        <th>Thời gian</th>
+                        <th>Tin nhắn gần nhất</th>
+                        <th style="width:120px;">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (cuaToi.Any())
+                    {
+                        foreach (var item in cuaToi)
+                        {
+                            var tinCuoi = item.TinNhanAIs
+                            .OrderByDescending(x => x.thoiGianGui)
+                            .FirstOrDefault();
+
+                            <tr>
+                                <td>@(item.KhachHang?.TenKhachHang ?? "Khách vãng lai")</td>
+                                <td>@item.ThoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@(tinCuoi?.NoiDung ?? "")</td>
+                                <td>
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.IdHoiThoaiAI"
+                                       class="btn btn-primary btn-sm">
+                                        Trả lời
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                Bạn chưa phụ trách hội thoại nào.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <strong>Lịch sử hội thoại đã phụ trách</strong>
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Khách hàng</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
+                        <th>Tin nhắn gần nhất</th>
+                        <th style="width:120px;">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (lichSu.Any())
+                    {
+                        foreach (var item in lichSu)
+                        {
+                            var tinCuoi = item.TinNhanAIs
+                            .OrderByDescending(x => x.thoiGianGui)
+                            .FirstOrDefault();
+
+                            <tr>
+                                <td>@(item.KhachHang?.TenKhachHang ?? "Khách vãng lai")</td>
+                                <td>@item.ThoiGianBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@(item.ThoiGianKetThuc?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa có")</td>
+                                <td>@(tinCuoi?.NoiDung ?? "")</td>
+                                <td>
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.IdHoiThoaiAI"
+                                       class="btn btn-outline-secondary btn-sm">
+                                        Xem lại
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                Chưa có lịch sử hội thoại đã phụ trách.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

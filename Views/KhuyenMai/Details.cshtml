@@ -1,0 +1,88 @@
+﻿@model Doantotnghiep.Models.Entities.KhuyenMai
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Chi tiết khuyến mãi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+        <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">@Model.TenKhuyenMai</h5>
+        </div>
+
+        <div class="card-body p-4">
+            <p><strong>Mô tả:</strong> @(Model.MoTaKhuyenMai ?? "Không có")</p>
+            <p><strong>Ngày bắt đầu:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy")</p>
+            <p><strong>Ngày kết thúc:</strong> @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+
+            <p>
+                <strong>Loại khuyến mãi:</strong>
+                @if (Model.LoaiKhuyenMai == LoaiKhuyenMai.GiamTheoPhanTram)
+                {
+                    <span>Giảm theo phần trăm</span>
+                }
+                else
+                {
+                    <span>Giảm theo số tiền</span>
+                }
+            </p>
+
+            <p>
+                <strong>Giá trị giảm:</strong>
+                @if (Model.LoaiKhuyenMai == LoaiKhuyenMai.GiamTheoPhanTram)
+                {
+                    <span>@Model.GiaTriGiam%</span>
+                }
+                else
+                {
+                    <span>@Model.GiaTriGiam.ToString("N0") VNĐ</span>
+                }
+            </p>
+
+            <p>
+                <strong>Trạng thái:</strong>
+                @if (Model.TrangThaiKhuyenMai)
+                {
+                    <span class="badge bg-success">Đang hoạt động</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Tạm tắt</span>
+                }
+            </p>
+
+            <hr />
+
+            <h5 class="fw-bold">Dịch vụ áp dụng</h5>
+
+            @if (Model.DichVuKhuyenMais != null && Model.DichVuKhuyenMais.Any())
+            {
+                foreach (var item in Model.DichVuKhuyenMais)
+                {
+                    <span class="badge bg-info text-dark me-1 mb-1">
+                        @item.DichVu?.TenDichVu
+                    </span>
+                }
+            }
+            else
+            {
+                <p class="text-muted">Chưa áp dụng cho dịch vụ nào.</p>
+            }
+        </div>
+
+        <div class="card-footer bg-white d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.IdKhuyenMai"
+               class="btn btn-warning">
+                Sửa khuyến mãi
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,319 @@
+﻿@model Doantotnghiep.Models.Entities.DatLich
+@using Doantotnghiep.Models.Entities
+@using Doantotnghiep.Models.Enum
+
+@{
+    ViewData["Title"] = "Chi tiết đặt lịch";
+
+    if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_UserLayout.cshtml";
+    }
+
+    var chiTietDichVus = ViewBag.ChiTietDichVus as List<ChiTietDatLich> ?? new List<ChiTietDatLich>();
+    var hoaDon = ViewBag.HoaDon as HoaDon;
+    var tongTien = chiTietDichVus.Sum(x => x.GiaDichVu * x.SoLuong);
+}
+
+<div class="container mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Quay lại
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Mã lịch: #@Model.IdDatLich</h5>
+
+            @if (Model.TrangThaiDatLich == Doantotnghiep.Models.Enum.TrangThaiDatLich.ChoXacNhan)
+            {
+                <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+            }
+            else if (Model.TrangThaiDatLich == Doantotnghiep.Models.Enum.TrangThaiDatLich.DaXacNhan)
+            {
+                <span class="badge bg-success">Đã xác nhận</span>
+            }
+            else if (Model.TrangThaiDatLich == Doantotnghiep.Models.Enum.TrangThaiDatLich.DangThucHien)
+            {
+                <span class="badge bg-info text-dark">Đang thực hiện</span>
+            }
+            else if (Model.TrangThaiDatLich == Doantotnghiep.Models.Enum.TrangThaiDatLich.DaHoanThanh)
+            {
+                <span class="badge bg-primary">Đã hoàn thành</span>
+            }
+            else if (Model.TrangThaiDatLich == Doantotnghiep.Models.Enum.TrangThaiDatLich.DaHuy)
+            {
+                <span class="badge bg-danger">Đã hủy</span>
+            }
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row g-4">
+
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <strong>Danh sách dịch vụ</strong>
+
+                        <span class="badge bg-secondary">
+                            Tổng: @chiTietDichVus.Count dịch vụ
+                        </span>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 60px;">#</th>
+                                        <th>Dịch vụ</th>
+                                        <th>Giá</th>
+                                        <th>Số lượng</th>
+                                        <th>Thành tiền</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @if (chiTietDichVus.Any())
+                                    {
+                                        var stt = 1;
+
+                                        foreach (var item in chiTietDichVus)
+                                        {
+                                            <tr>
+                                                <td>@stt</td>
+
+                                                <td>
+                                                    <strong>@item.DichVu?.TenDichVu</strong>
+                                                </td>
+
+                                                <td>
+                                                    @item.GiaDichVu.ToString("N0") VNĐ
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge bg-info text-dark">
+                                                        @item.SoLuong
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <strong class="text-success">
+                                                        @((item.GiaDichVu * item.SoLuong).ToString("N0")) VNĐ
+                                                    </strong>
+                                                </td>
+                                            </tr>
+
+                                            stt++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4">
+                                                <span class="text-muted">
+                                                    Lịch đặt này chưa có dịch vụ.
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <h5 class="mb-0">
+                                Tổng tiền:
+                                <span class="text-success fw-bold">
+                                    @tongTien.ToString("N0") VNĐ
+                                </span>
+                            </h5>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <a asp-controller="ChiTietDatLich"
+                                   asp-action="Index"
+                                   asp-route-idDatLich="@Model.IdDatLich"
+                                   class="btn btn-outline-primary">
+                                    Quản lý dịch vụ
+                                </a>
+
+                                @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+                                {
+                                    if (hoaDon == null)
+                                    {
+                                        <form asp-controller="HoaDon"
+                                              asp-action="TaoHoaDon"
+                                              method="post"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden" name="idDatLich" value="@Model.IdDatLich" />
+
+                                            <button type="submit"
+                                                    class="btn btn-success"
+                                                    onclick="return confirm('Bạn có chắc muốn tạo hóa đơn cho lịch này không?');">
+                                                Tạo hóa đơn
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="HoaDon"
+                                           asp-action="Details"
+                                           asp-route-id="@hoaDon.IdHoaDon"
+                                           class="btn btn-info">
+                                            Xem hóa đơn
+                                        </a>
+
+                                        if (hoaDon.TrangThaiHoaDon == TrangThaiHoaDon.ChuaThanhToan)
+                                        {
+                                            <form asp-controller="HoaDon"
+                                                  asp-action="ThanhToan"
+                                                  method="post"
+                                                  class="d-inline">
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden" name="idHoaDon" value="@hoaDon.IdHoaDon" />
+                                                <input type="hidden" name="phuongThucTT" value="@PhuongThucTT.TienMat" />
+
+                                                <button type="submit"
+                                                        class="btn btn-primary"
+                                                        onclick="return confirm('Xác nhận khách đã thanh toán hóa đơn này?');">
+                                                    Xác nhận thanh toán
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (hoaDon.TrangThaiHoaDon == TrangThaiHoaDon.DaThanhToan)
+                                        {
+                                            <span class="badge bg-success align-self-center">
+                                                Đã thanh toán
+                                            </span>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="fw-bold mb-3 text-primary">Thông tin khách hàng</h6>
+
+                        <div class="mb-3">
+                            <label class="text-muted d-block">Khách hàng</label>
+                            <strong>@Model.KhachHang?.TenKhachHang</strong>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="text-muted d-block">Nhân viên phụ trách</label>
+                            <strong>@Model.NhanVien?.TenNhanVien</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="fw-bold mb-3 text-primary">Thời gian lịch hẹn</h6>
+
+                        <div class="mb-3">
+                            <label class="text-muted d-block">Ngày hẹn</label>
+                            <strong>@Model.NgayHenLich.ToString("dd/MM/yyyy")</strong>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="text-muted d-block">Giờ bắt đầu</label>
+                                <span class="badge bg-info text-dark">
+                                    @Model.GioBatDauDV.ToString("HH:mm")
+                                </span>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="text-muted d-block">Giờ kết thúc</label>
+                                <span class="badge bg-warning text-dark">
+                                    @Model.GioKetThucDV.ToString("HH:mm")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="border rounded p-3">
+                        <h6 class="fw-bold mb-3 text-primary">Thông tin bổ sung</h6>
+
+                        <div class="mb-3">
+                            <label class="text-muted d-block">Ghi chú</label>
+                            @if (!string.IsNullOrWhiteSpace(Model.GhiChuDatLich))
+                            {
+                                <p class="mb-0">@Model.GhiChuDatLich</p>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có ghi chú</span>
+                            }
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="text-muted d-block">Ngày tạo</label>
+                                <strong>@Model.NgayTaoDatLich.ToString("dd/MM/yyyy HH:mm")</strong>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="text-muted d-block">Ngày cập nhật</label>
+                                <strong>
+                                    @(Model.NgayCapNhatDatLich?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa cập nhật")
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            @if ((User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+                        && Model.TrangThaiDatLich == Doantotnghiep.Models.Enum.TrangThaiDatLich.ChoXacNhan)
+            {
+                <hr class="my-4" />
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <form asp-action="UpdateTrangThai" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.IdDatLich" />
+                        <input type="hidden" name="trangThai" value="DaXacNhan" />
+
+                        <button type="submit"
+                                class="btn btn-success"
+                                onclick="return confirm('Bạn có chắc muốn xác nhận lịch này không?');">
+                            Xác nhận lịch
+                        </button>
+                    </form>
+
+                    <form asp-action="UpdateTrangThai" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.IdDatLich" />
+                        <input type="hidden" name="trangThai" value="DaHuy" />
+
+                        <button type="submit"
+                                class="btn btn-danger"
+                                onclick="return confirm('Bạn có chắc muốn từ chối lịch này không?');">
+                            Từ chối lịch
+                        </button>
+                    </form>
+    
+                </div>
+            }
+        </div>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>

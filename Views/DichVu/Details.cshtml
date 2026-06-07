@@ -1,68 +1,212 @@
 ﻿@model Doantotnghiep.Models.Entities.DichVu
-@{
-	ViewData["Title"] = "Chi tiết Dịch Vụ";
+
+@if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="container mt-4" style="max-width: 700px;">
-	<div class="d-flex justify-content-between align-items-center mb-3">
-		<h2> Chi tiet dich vu</h2>
-		<a asp-action="Index" class="btn btn-secondary">Quay lai</a>
-	</div>
-	<div class="card">
-		<div class="card-body">
-			@if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
-			{
-				<div class="row mb-3">
-					<div class="col-4 fw-bold">Id dich vu:</div>
-					<div class="col-8">@Model.IdDichVu</div>
-				</div>
-			}
-			<div class="row mb-3">
-				<div class="col-4 fw-bold">Ten dich vu:</div>
-				<div class="col-8">@Model.TenDichVu</div>
-			</div>
-			<div class="row mb-3">
-				<div class="col-4 fw-bold">Loai dich vu:</div>
-				<div class="col-8">@Model.LoaiDichVu.TenLoaiDichVu</div>
-			</div>
-			<div class="row mb-3">
-				<div class="col-4 fw-bold">Mo ta dich vu:</div>
-				<div class="col-8">@Model.MoTaDichVu</div>
-			</div>
-			<div class="row mb-3">
-				<div class="col-4 fw-bold">Gia dich vu:</div>
-				<div class="col-8">@Model.GiaDichVu</div>
-			</div>
-			<div class="row mb-3">
-				<div class="col-4 fw-bold">Thoi luong dich vu:</div>
-				<div class="col-8">@Model.ThoiLuongDV</div>
-			</div>
-			<div class="row mb-3">
-				<div class="col-4 fw-bold">Trang thai:</div>
-				<div class="col-8">@Model.TrangThaiDV</div>
-			</div>
-			<div class="row mb-3">
-				<div class="col-4 fw-bold">Hinh anh:</div>
-				<div class="col-8">
-					@if (!string.IsNullOrEmpty(Model.HinhAnhDichVu))
-					{
-						<img src="@Model.HinhAnhDichVu" alt="Hinh anh dich vu" style="max-width: 100%; border-radius: 8px;" />
-					}
-					else
-					{
-						<span>Khong co hinh anh</span>
-					}
-				</div>
-			</div>
-		</div>
-		@if (User.IsInRole("Admin") || User.IsInRole("NhanVien")){
-		<div class="card-footer d-flex gap-2">
-			<a asp-action="Edit" asp-route-id="@Model.IdDichVu" class="btn btn-warning"> Sua</a>
-			<form asp-action="Delete" asp-route-id="@Model.IdDichVu" method="post" class="d-inline"
-				  onsubmit="return confirm('Bạn có chắc muốn xóa dịch vụ này?')">
-				@Html.AntiForgeryToken()
-				<button type="submit" class="btn btn-danger">Xóa</button>
-			</form>
-		</div>
-		}
-	</div>
+else
+{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="service-detail-page">
+
+    <div class="container py-5">
+
+        <div class="service-detail-card">
+
+            <div class="row g-0 align-items-stretch">
+
+                <div class="col-lg-6">
+                    <div class="service-image-area">
+                        @if (!string.IsNullOrWhiteSpace(Model.HinhAnhDichVu))
+                        {
+                            <img src="@Model.HinhAnhDichVu"
+                                 alt="@Model.TenDichVu"
+                                 class="service-main-image" />
+                        }
+                        else
+                        {
+                            <div class="service-image-placeholder">
+                                SPA
+                            </div>
+                        }
+
+                        <div class="service-price-tag">
+                            @Model.GiaDichVu.ToString("N0") VNĐ
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="service-content-area">
+
+                        <span class="service-label">Dịch vụ spa</span>
+
+                        <h1 class="service-title">
+                            @Model.TenDichVu
+                        </h1>
+
+                        <div class="service-badges">
+                            <span class="service-badge time">
+                                ⏱ @Model.ThoiLuongDV phút
+                            </span>
+
+                            @if (Model.TrangThaiDV)
+                            {
+                                <span class="service-badge active">
+                                    Đang hoạt động
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="service-badge inactive">
+                                    Tạm ngưng
+                                </span>
+                            }
+                        </div>
+
+                        <p class="service-description">
+                            @if (!string.IsNullOrWhiteSpace(Model.MoTaDichVu))
+                            {
+                                @Model.MoTaDichVu
+                            }
+                            else
+                            {
+                                <span>Dịch vụ chăm sóc chuyên nghiệp tại spa, giúp khách hàng thư giãn và cải thiện trải nghiệm chăm sóc bản thân.</span>
+                            }
+                        </p>
+
+                        <div class="service-actions">
+                            @if (!User.IsInRole("Admin") && !User.IsInRole("NhanVien"))
+                            {
+                                <a asp-controller="DatLich"
+                                   asp-action="Create"
+                                   asp-route-idDichVu="@Model.IdDichVu"
+                                   class="btn btn-booking">
+                                    Đặt lịch ngay
+                                </a>
+                            }
+
+                            <a asp-action="Index" class="btn btn-back-service">
+                                Xem dịch vụ khác
+                            </a>
+
+                            @if (User.IsInRole("Admin") || User.IsInRole("NhanVien"))
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@Model.IdDichVu"
+                                   class="btn btn-edit-service">
+                                    Sửa dịch vụ
+                                </a>
+
+                                <form asp-action="Delete"
+                                      asp-route-id="@Model.IdDichVu"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Bạn có chắc muốn xóa dịch vụ này không?');">
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit" class="btn btn-delete-service">
+                                        Xóa dịch vụ
+                                    </button>
+                                </form>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row g-4 mt-4">
+
+            <div class="col-md-4">
+                <div class="service-info-box">
+                    <div class="service-info-icon">⏱️</div>
+                    <h5>Thời lượng</h5>
+                    <p>Dịch vụ thực hiện trong khoảng <strong>@Model.ThoiLuongDV phút</strong>.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="service-info-box">
+                    <div class="service-info-icon">💆</div>
+                    <h5>Trải nghiệm</h5>
+                    <p>Phù hợp cho khách hàng muốn thư giãn, chăm sóc sắc đẹp và cải thiện tinh thần.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="service-info-box">
+                    <div class="service-info-icon">📅</div>
+                    <h5>Đặt lịch</h5>
+                    <p>Khách hàng có thể đặt lịch trực tuyến và theo dõi trạng thái xử lý trên hệ thống.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="service-extra-card mt-4">
+            <h3>Thông tin chi tiết dịch vụ</h3>
+
+            <div class="row g-4 mt-2">
+
+                @if (!string.IsNullOrWhiteSpace(Model.LieuTrinhDichVu))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Liệu trình dịch vụ</h6>
+                            <p>@Model.LieuTrinhDichVu</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.NguyenLieuSuDung))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Nguyên liệu / sản phẩm sử dụng</h6>
+                            <p>@Model.NguyenLieuSuDung</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.QuyTrinhThucHien))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Quy trình thực hiện</h6>
+                            <p>@Model.QuyTrinhThucHien</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.CongCuSuDung))
+                {
+                    <div class="col-md-6">
+                        <div class="service-detail-item">
+                            <h6>Công cụ sử dụng</h6>
+                            <p>@Model.CongCuSuDung</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.LuuYKhachHang))
+                {
+                    <div class="col-12">
+                        <div class="service-detail-item warning">
+                            <h6>Lưu ý cho khách hàng</h6>
+                            <p>@Model.LuuYKhachHang</p>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+
 </div>

@@ -79,14 +79,34 @@ namespace Doantotnghiep.Services
                 TenNhanVien = createNhanVienVM.TenNhanVien,
                 DiaChiNV = createNhanVienVM.DiaChiNhanVien,
                 ChuyenMonNV = createNhanVienVM.ChuyenMonNV,
+
+                LaNhanVienFullTime = createNhanVienVM.LaNhanVienFullTime,
+                GioBatDauLamViec = createNhanVienVM.GioBatDauLamViec,
+                GioKetThucLamViec = createNhanVienVM.GioKetThucLamViec,
+
                 TrangThaiNV = Doantotnghiep.Models.Enum.TrangThaiNhanVien.DangLamViec
             };
             _context.NhanViens.Add(nhanvien);
             await _context.SaveChangesAsync();
+            if (createNhanVienVM.IdDichVus != null && createNhanVienVM.IdDichVus.Any())
+            {
+                foreach (var idDichVu in createNhanVienVM.IdDichVus.Distinct())
+                {
+                    var nhanVienDichVu = new NhanVienDichVu
+                    {
+                        IdNhanVien = nhanvien.IdNhanVien,
+                        IdDichVu = idDichVu
+                    };
+
+                    _context.NhanVienDichVus.Add(nhanVienDichVu);
+                }
+
+                await _context.SaveChangesAsync();
+            }
             return (true, "Tạo nhân viên thành công.");
         }
         //Dang nhap
-        public async Task<TaiKhoan?> LoginAsync(LoginVM model)
+        public async Task<LoginResultVM> LoginAsync(LoginVM model)
         {
             var user = await _context.TaiKhoans
                 .FirstOrDefaultAsync(tk => tk.TenTaiKhoan == model.TenDangNhap);
@@ -98,7 +118,35 @@ namespace Doantotnghiep.Services
                 model.MatKhau,
                 user.Salt,
                 user.Passwordhash);
-            return isValid ? user : null;
+            if(!isValid)
+            {
+                return null;
+            }
+            var result = new LoginResultVM
+            {
+                IdTaiKhoan = user.IdTaiKhoan,
+                TenTaiKhoan = user.TenTaiKhoan,
+                IdVaiTro = user.IdVaiTro
+            };
+            if(user.IdVaiTro == 2)
+            {
+                var nhanvien = await _context.NhanViens
+                    .FirstOrDefaultAsync(nv => nv.IdTaiKhoan == user.IdTaiKhoan);
+                if (nhanvien != null)
+                {
+                    result.IdNhanVien = nhanvien.IdNhanVien;
+                }
+            }
+            else if (user.IdVaiTro == 3)
+            {
+                var khachhang = await _context.KhachHangs
+                    .FirstOrDefaultAsync(kh => kh.IdTaiKhoan == user.IdTaiKhoan);
+                if (khachhang != null)
+                {
+                    result.IdKhachHang = khachhang.IdKhachHang;
+                }
+            }
+            return result;
         }
     }
 }

@@ -1,0 +1,56 @@
+﻿@model Doantotnghiep.Models.Entities.HoiThoaiAI
+
+@{
+    ViewData["Title"] = "Chi tiết hội thoại AI";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var tinNhans = Model.TinNhanAIs.OrderBy(x => x.thoiGianGui).ToList();
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Chi tiết hội thoại AI</h2>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            ← Quay lại danh sách hội thoại
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <strong>Khách hàng:</strong> @(Model.KhachHang?.TenKhachHang ?? "Khách vãng lai")
+            <br />
+            <strong>Nhân viên:</strong> @(Model.NhanVien?.TenNhanVien ?? "Chưa có")
+            <br />
+            <strong>Trạng thái:</strong> @Model.TrangThaiHoiThoai
+        </div>
+
+        <div class="card-body bg-light" style="height: 500px; overflow-y:auto;">
+            @foreach (var tin in tinNhans)
+            {
+                <div class="mb-3">
+                    <strong>@tin.VaiTro:</strong>
+                    <div class="border rounded p-2 bg-white">
+                        @tin.NoiDung
+                    </div>
+                    <small class="text-muted">@tin.thoiGianGui.ToString("HH:mm dd/MM")</small>
+                </div>
+            }
+        </div>
+
+        <div class="card-footer bg-white">
+            @if (Model.TrangThaiHoiThoai != "DaKetThuc")
+            {
+                <form asp-action="KetThuc"
+                      asp-route-id="@Model.IdHoiThoaiAI"
+                      method="post"
+                      onsubmit="return confirm('Bạn có chắc muốn kết thúc hội thoại này?');">
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="btn btn-danger">
+                        Kết thúc hội thoại
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
